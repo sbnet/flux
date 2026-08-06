@@ -213,3 +213,11 @@ project**. No next phase until the demo passes.
   and demonstrated, CI green, skills installed. Branch protection is
   **waived in v1** (GitHub Free + private repo does not allow it); the human
   gate remains a discipline until the repo goes public or Pro.
+- **2026-08-06 — Phases 2 and 3 validated end to end** on the first real
+  feature (PR #3, candidate CRUD): spec → issue → PR → gates → automated
+  review (2 real logic findings) → human merge. First-run feedback led to
+  three fixes: the `flux-feature` skill (autonomous cycle, human only
+  merges), a CI watch-and-fix loop in `gh-pr`, and a human-triage flow in
+  `gh-address-comments` (review comments are never auto-addressed).
+  CI pitfall fixed on the way: assets must build **before** the gates
+  (Inertia tests need the Vite manifest).
