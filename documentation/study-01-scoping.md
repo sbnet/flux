@@ -156,8 +156,7 @@ interfaces (config, skill names) are stable.
   rewrite.
 - **Pilot: Laravel / Vue / Inertia.** Monolith = one repo, one gate config:
   `pint` (lint), `larastan` (static analysis), `pest` (tests), `vite build`.
-  Inertia avoids managing a separate API. Bonus: it is the stack currently
-  being learned (upcoming project).
+  Inertia avoids managing a separate API.
 - **Second pilot (phase 4)**: Next.js, to prove `flux-config.yml` is generic
   across a different toolchain.
 
