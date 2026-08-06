@@ -1,0 +1,10 @@
+{
+  "name": "flux",
+  "version": "0.1.0",
+  "description": "Quasi-autonomous development workflow: config-driven quality gates (flux-gate), spec → issue → PR cycle, automated review with human merge",
+  "author": {
+    "name": "Stéphane Brun"
+  },
+  "repository": "https://github.com/sbnet/flux",
+  "keywords": ["workflow", "quality-gates", "hooks", "specs", "github"]
+}
