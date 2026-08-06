@@ -1,28 +1,30 @@
-# flux-config.yml — schéma v1 (référence annotée)
-# Ce fichier vit à la racine de chaque projet piloté par Flux.
-# Il est lu par les scripts de hooks (via yq) et par les skills Flux.
-# Règle : on n'ajoute une clé que lorsqu'un consommateur (hook ou skill)
-# en a besoin.
+# flux-config.yml — schema v1 (annotated reference)
+# This file lives at the root of every flux-managed project.
+# It is read by the hook scripts (via yq) and by the flux skills.
+# Rule: a key is only added once a consumer (hook or skill) needs it.
 
 project:
-  name: ats               # identifiant humain du projet
+  name: ats               # human-readable project identifier
 
-forge: github             # v1 : github uniquement ; gitea/forgejo envisagé en v2
+forge: github             # v1: github only; gitea/forgejo considered for v2
 
-commands:                 # commandes exécutées par les hooks — une seule
-  lint: "vendor/bin/pint --test"          # vérification, ne modifie pas
-  lint_fix: "vendor/bin/pint"             # variante corrective (optionnelle)
-  static: "vendor/bin/phpstan analyse"    # analyse statique (optionnelle)
+commands:                 # commands run by the hooks — one line each
+  lint: "vendor/bin/pint --test"          # check only, does not modify
+  lint_fix: "vendor/bin/pint"             # fixing variant (optional)
+  static: "vendor/bin/phpstan analyse --no-progress --memory-limit=1G"
+  types: "npm run types:check"
+  lint_front: "npm run lint:check"
+  format_front: "npm run format:check"
   test: "php artisan test"
   build: "npm run build"
 
-gates:                    # quelles étapes bloquent quel événement
-  on_edit: [lint]         # PostToolUse (Edit/Write) — doit rester rapide
-  on_push: [lint, static, test]   # PreToolUse sur `git push`
-  on_stop: []             # Stop hook — vide en v1
+gates:                    # which steps block which event
+  on_edit: [lint]         # PostToolUse (Edit/Write) — must stay fast
+  on_push: [lint, static, types, lint_front, format_front, test]  # PreToolUse on `git push`
+  on_stop: []             # Stop hook — empty in v1
 
 specs:
-  dir: specs/             # skill specs : SPEC-<ref>.md + index README.md
+  dir: specs/             # specs skill: SPEC-<ref>.md + README.md index
 
 github:
-  labels: [flux]          # labels par défaut pour gh-issue / gh-pr
+  labels: [flux]          # default labels for gh-issue / gh-pr
