@@ -22,6 +22,13 @@ Then, in the project you want flux to manage:
 /flux-init
 ```
 
+To update to the latest version:
+
+```shell
+/plugin marketplace update flux
+/reload-plugins
+```
+
 `flux-init` detects the stack, writes `flux-config.yml`, installs the CI
 gate script and workflows, the `CLAUDE.md` contract and the specs index.
 Requirements: `yq` v4, `gh` ≥ 2.20 authenticated, and a
@@ -59,6 +66,11 @@ Two lines of defense:
 Together with the hooks they cover the full contribution cycle:
 spec → issue → branch → gated push → PR → CI + automated review → human
 triage → human merge.
+
+**New to flux?** Read the
+[step-by-step walkthrough](documentation/walkthrough.md) — one real
+feature through the whole cycle, including when the local reviewer is
+worth running and when it is not.
 
 ## License
 

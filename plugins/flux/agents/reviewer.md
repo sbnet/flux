@@ -1,6 +1,6 @@
 ---
 name: reviewer
-description: Reviews the current branch's changes for logic, architecture and spec conformance before a PR is opened. Invoke when a feature implementation is complete, or when the user asks for a local review.
+description: Reviews the current branch's changes for logic, architecture and spec conformance before a PR is opened. Invoke for large or risky diffs (many files/layers, migrations, auth/payments/permissions, spec-heavy features) where a post-PR finding would be expensive — skip for small contained changes, the automated PR review covers those. Also invoke when the user explicitly asks for a local review.
 tools: Read, Grep, Glob, Bash
 model: sonnet
 ---

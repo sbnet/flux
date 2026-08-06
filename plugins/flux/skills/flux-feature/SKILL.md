@@ -32,10 +32,18 @@ that belongs to a human is merging the PR.
    tests as part of the implementation, not after the PR.
 4. **Gates.** The flux-gate hooks run automatically on edits and on push.
    If a gate blocks, fix it and continue — that is the normal loop.
-5. **Local verification (recommended for non-trivial features).** Launch
-   the `reviewer` subagent on the diff, and the `qa` subagent to exercise
-   the spec's user flows against the running app. Address their findings
-   before opening the PR — cheaper than a review round trip.
+5. **Local verification (conditional — see the rule).** The automated PR
+   review will cover the final diff anyway, so the local `reviewer` is an
+   optimizer, not a duplicate step. Run it only when a post-PR finding
+   would be expensive to fix — any of: diff spanning many files or layers,
+   schema/data migration, sensitive area (auth, payments, permissions,
+   file handling), or a spec with many acceptance criteria. For small
+   contained features, skip it and let the PR review do its job.
+   The `qa` subagent duplicates nothing — nobody else runs the app — so
+   run it whenever the feature has observable user flows.
+   Address findings before opening the PR.
+   Full rationale and a worked example:
+   `documentation/walkthrough.md` in the flux repository.
 6. **Commit and push.** Conventional commits, atomic where reasonable.
    `git push -u origin HEAD`.
 7. **Open the PR.** Apply the `gh-pr` skill conventions (title, body built
