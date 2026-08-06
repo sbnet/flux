@@ -21,7 +21,7 @@ following the project conventions.
 ## Writing
 
 - **Title**: imperative, concise, no type prefix ("Add the candidate
-  pipeline", not "feat: …" — commit conventions do not apply to issues).
+  pipeline", not "feat: …"; commit conventions do not apply to issues).
 - **Body**:
 
 ```markdown

@@ -27,7 +27,7 @@ jobs:
 
             You are the automated reviewer of this flux-managed repository.
             Style, static analysis, types and tests are already enforced by
-            the "Flux gates" CI job — do not re-check them. Focus on what
+            the "Flux gates" CI job; do not re-check them. Focus on what
             machines miss:
             - logic errors and edge cases
             - architecture and design fit with the existing codebase
@@ -41,7 +41,7 @@ jobs:
             Use `gh pr comment` for top-level feedback.
             Use `mcp__github_inline_comment__create_inline_comment` (with
             `confirmed: true`) to highlight specific code issues.
-            Only post GitHub comments — don't submit review text as messages.
+            Only post GitHub comments; don't submit review text as messages.
             You review, you never approve: merging requires a human decision.
 
           claude_args: |

@@ -1,6 +1,6 @@
 ---
 name: qa
-description: Runs the application for real and verifies observable behavior against the spec — beyond what automated tests cover. Invoke after implementation, before or alongside the PR, or when the user asks to verify a feature works.
+description: Runs the application for real and verifies observable behavior against the spec, beyond what automated tests cover. Invoke after implementation, before or alongside the PR, or when the user asks to verify a feature works.
 tools: Read, Grep, Glob, Bash
 model: sonnet
 ---

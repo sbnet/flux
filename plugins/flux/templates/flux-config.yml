@@ -1,4 +1,4 @@
-# flux-config.yml — schema v1 (annotated reference)
+# flux-config.yml: schema v1 (annotated reference)
 # This file lives at the root of every flux-managed project.
 # It is read by the hook scripts (via yq) and by the flux skills.
 # Rule: a key is only added once a consumer (hook or skill) needs it.
@@ -8,7 +8,7 @@ project:
 
 forge: github             # v1: github only; gitea/forgejo considered for v2
 
-commands:                 # commands run by the hooks — one line each
+commands:                 # commands run by the hooks, one line each
   lint: "vendor/bin/pint --test"          # check only, does not modify
   lint_fix: "vendor/bin/pint"             # fixing variant (optional)
   static: "vendor/bin/phpstan analyse --no-progress --memory-limit=1G"
@@ -19,9 +19,9 @@ commands:                 # commands run by the hooks — one line each
   build: "npm run build"
 
 gates:                    # which steps block which event
-  on_edit: [lint]         # PostToolUse (Edit/Write) — must stay fast
+  on_edit: [lint]         # PostToolUse (Edit/Write), must stay fast
   on_push: [lint, static, types, lint_front, format_front, test]  # PreToolUse on `git push`
-  on_stop: []             # Stop hook — empty in v1
+  on_stop: []             # Stop hook, empty in v1
 
 specs:
   dir: specs/             # specs skill: SPEC-<ref>.md + README.md index

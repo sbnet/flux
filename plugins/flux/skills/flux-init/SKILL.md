@@ -1,6 +1,6 @@
 ---
 name: flux-init
-description: Set up flux in the current project — config, gate script for CI, workflows, CLAUDE.md contract, specs index, GitHub label. Use when the user asks to initialize/install flux in a project.
+description: Set up flux in the current project: config, gate script for CI, workflows, CLAUDE.md contract, specs index, GitHub label. Use when the user asks to initialize/install flux in a project.
 ---
 
 # Skill: flux-init
@@ -27,7 +27,7 @@ live in `<plugin root>/templates/`.
 4. **Gate script for CI.** Copy `<plugin root>/hooks/flux-gate.sh` to
    `.claude/hooks/flux-gate.sh` (chmod +x). In local sessions the plugin's
    own hooks run it; the committed copy exists because CI runners have no
-   plugin cache. Do NOT add hooks to `.claude/settings.json` — the plugin
+   plugin cache. Do NOT add hooks to `.claude/settings.json`: the plugin
    already provides them, duplicating would run every gate twice.
 5. **Workflows.** Copy `templates/ci.yml` and `templates/claude-review.yml`
    to `.github/workflows/`. Adapt the Prepare/Build steps of ci.yml to the

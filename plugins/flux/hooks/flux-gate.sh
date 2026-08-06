@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# flux-gate — generic quality-gate hook driven by flux-config.yml
+# flux-gate: generic quality-gate hook driven by flux-config.yml
 #
 # Usage: flux-gate.sh <edit|push|stop|ci>
 #   edit  → gates.on_edit   (PostToolUse on Edit|Write)
@@ -8,7 +8,7 @@
 #   ci    → gates.on_push   (direct call from CI, no stdin)
 #
 # Exit 0: everything green (or nothing to do). Exit 2: at least one gate
-# failed — Claude Code blocks the action and receives the report on stderr.
+# failed; Claude Code blocks the action and receives the report on stderr.
 # Dependency: yq v4 (mikefarah).
 
 set -uo pipefail
@@ -49,7 +49,7 @@ for gate in "${gates[@]}"; do
   rc=$?
   if [ $rc -ne 0 ]; then
     failed=1
-    report+=$'\n'"[flux-gate] gate '$gate' FAILED (exit $rc) — $cmd"
+    report+=$'\n'"[flux-gate] gate '$gate' FAILED (exit $rc): $cmd"
     report+=$'\n'"$(printf '%s' "$out" | tail -30)"
   fi
 done

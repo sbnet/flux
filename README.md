@@ -1,6 +1,6 @@
 # Flux
 
-A quasi-autonomous development workflow built on Claude Code — a convention
+A quasi-autonomous development workflow built on Claude Code: a convention
 and configuration layer over native primitives (hooks, skills, GitHub
 Actions), not a new engine.
 
@@ -16,8 +16,8 @@ In a Claude Code session:
 /plugin install flux@flux
 ```
 
-Or from the terminal — required with the VS Code extension, where the
-`/plugin` command is not available:
+Or from the terminal (required with the VS Code extension, where the
+`/plugin` command is not available):
 
 ```shell
 claude plugin marketplace add sbnet/flux
@@ -51,15 +51,15 @@ which event.
 
 Two lines of defense:
 
-1. **Local hooks** — the plugin runs
+1. **Local hooks.** The plugin runs
    [flux-gate.sh](plugins/flux/hooks/flux-gate.sh) on Claude Code events
    (`PostToolUse` after edits, `PreToolUse` on `git push`). A failing gate
    blocks the action and feeds the report back to the agent, which fixes it
    on its own.
-2. **CI as source of truth** — the same script, same config, replayed by
-   GitHub Actions (a copy is committed in each project for the runners),
-   plus an automated PR review by `claude-code-action`. The review comments,
-   it never approves: merging is a human decision.
+2. **CI as source of truth.** The same script and the same config are
+   replayed by GitHub Actions (a copy is committed in each project for the
+   runners), plus an automated PR review by `claude-code-action`. The
+   review comments, it never approves: merging is a human decision.
 
 ## Skills
 
@@ -87,17 +87,17 @@ spec → issue → branch → gated push → PR → CI + automated review → hu
 triage → human merge.
 
 **New to flux?** Read the
-[step-by-step walkthrough](documentation/walkthrough.md) — one real
+[step-by-step walkthrough](documentation/walkthrough.md): one real
 feature through the whole cycle, including when the local reviewer is
 worth running and when it is not.
 
 ## License
 
 [MIT](LICENSE) © Stéphane Brun. Any use, commercial included, requires
-keeping the copyright notice — that is the attribution.
+keeping the copyright notice. That notice is the attribution.
 
 ## Status
 
-Work in progress — see the
+Work in progress. See the
 [scoping study](documentation/study-01-scoping.md) for the architecture,
 decisions and phase plan. Current pilot: a Laravel/Vue/Inertia application.

@@ -16,7 +16,7 @@ documentation/                    # scoping study, annotated config reference
 ```
 
 Key design rule: flux is a **convention and configuration layer** over
-native Claude Code and GitHub primitives — not an engine. Before adding
+native Claude Code and GitHub primitives, not an engine. Before adding
 machinery, check whether a hook, a skill, branch protection or a workflow
 already does the job. See the
 [scoping study](documentation/study-01-scoping.md).
@@ -42,10 +42,10 @@ Semver, bumped in **both** `plugins/flux/.claude-plugin/plugin.json` and the
 plugin entry of `.claude-plugin/marketplace.json`, in the same commit as the
 change:
 
-- **patch** — fixes, docs, wording of skills
-- **minor** — new skill, agent, template, or new config key (backward
+- **patch**: fixes, docs, wording of skills
+- **minor**: new skill, agent, template, or new config key (backward
   compatible)
-- **major** — breaking change to `flux-config.yml` schema, hook behavior,
+- **major**: breaking change to `flux-config.yml` schema, hook behavior,
   or a skill's contract
 
 Users pick up new versions with `/plugin marketplace update flux`.
@@ -56,7 +56,7 @@ commit, so the repository sidebar always shows the current version:
 ```shell
 git tag -a vX.Y.Z -m "short summary"
 git push origin vX.Y.Z
-gh release create vX.Y.Z --title "vX.Y.Z — short summary" --notes "…"
+gh release create vX.Y.Z --title "vX.Y.Z: short summary" --notes "…"
 ```
 
 ## Pull requests

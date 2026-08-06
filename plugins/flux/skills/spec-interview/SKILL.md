@@ -8,7 +8,7 @@ description: Interview the user about a feature they want to build, then write a
 ## Purpose
 
 Interview the user in depth about what they want to build, then produce a
-complete specification in the project's specs directory — **one spec per
+complete specification in the project's specs directory: **one spec per
 file**, never a single overwritten `SPEC.md`.
 
 ## Location and naming
@@ -19,11 +19,11 @@ file**, never a single overwritten `SPEC.md`.
    - if the spec starts from an existing GitHub issue → its number: `SPEC-42.md`;
    - otherwise → a short, stable kebab slug: `SPEC-candidate-pipeline.md`.
    The ref never changes once the file exists (even if an issue is opened
-   later — it is then recorded in the frontmatter instead).
+   later; it is then recorded in the frontmatter instead).
 3. If a file already exists for this ref, update it rather than creating a
    second one.
 
-## Phase 1 — Interview
+## Phase 1: Interview
 
 Use `AskUserQuestion`. Dig into the hard parts:
 
@@ -41,7 +41,7 @@ per call).
 Stop when: implementation could start without further clarification, edge
 cases and tradeoffs are documented, acceptance criteria are clear.
 
-## Phase 2 — Write the spec
+## Phase 2: Write the spec
 
 Write `<specs.dir>/SPEC-<ref>.md`:
 
@@ -70,7 +70,7 @@ date: [YYYY-MM-DD]
 1. …
 
 ## Data model
-[Tables / fields / relationships — only what is new or changed]
+[Tables / fields / relationships; only what is new or changed]
 
 ## API / Routes
 [Method, path, auth, request, response, errors]
@@ -96,10 +96,10 @@ date: [YYYY-MM-DD]
 
 Omit sections that do not apply; add sections if needed.
 
-## Phase 3 — Index and next step
+## Phase 3: Index and next step
 
 1. Maintain `<specs.dir>/README.md`: a table
-   `| Ref | Title | Status | Issue | File |` — add or update this spec's row.
+   `| Ref | Title | Status | Issue | File |`. Add or update this spec's row.
 2. Tell the user where the file is and what remains open.
 3. When the user validates the spec: set `status: validated`, then offer to
    chain into `/gh-issue` to create the linked GitHub issue.

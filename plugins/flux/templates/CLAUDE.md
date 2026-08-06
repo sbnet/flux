@@ -1,4 +1,4 @@
-# ATS — flux-managed project
+# Flux-managed project
 
 This project is driven by [flux](https://github.com/sbnet/flux):
 `flux-config.yml` declares the commands and quality gates; the flux-gate
@@ -11,7 +11,7 @@ hooks enforce them on edits and pushes.
   push, open the PR (`gh-pr` skill conventions), then watch CI and fix
   failures until green. The `flux-feature` skill describes the full cycle.
 - **The only human step is merging the PR.** Never merge; never approve
-  reviews. Everything else — including fixing red CI on an open PR — is
+  reviews. Everything else, including fixing red CI on an open PR, is
   yours to carry without asking.
 - **Never bypass a gate.** No `--no-verify`, no weakening a test or a
   config to get to green. If a gate blocks, fix the cause.

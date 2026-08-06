@@ -16,14 +16,14 @@ changes, links to the issue and spec, and a verifiable test plan.
    (`feat/<ref>-<slug>` or `fix/<slug>`).
 2. Everything is committed and pushed (`git status`,
    `git push -u origin HEAD`). The flux-gate hook runs the gates on push:
-   if it blocks, fix the failures first — never bypass it.
+   if it blocks, fix the failures first, never bypass it.
 3. Read `flux-config.yml`: `github.labels` = default PR labels.
 
 ## Writing
 
 - **Title**: conventional commit format (`feat(candidates): add pipeline
-  board`) — it often becomes the squash-merge commit message.
-- **Body** — build it from the actual diff (`git diff main...HEAD`), not
+  board`); it often becomes the squash-merge commit message.
+- **Body**: build it from the actual diff (`git diff main...HEAD`), not
   from memory:
 
 ```markdown
@@ -66,6 +66,6 @@ Do not stop at "PR opened". A PR with red CI is not delivered.
 4. Loop until green. After 3 failed attempts on the same error, stop and
    report the diagnosis to the user instead of thrashing.
 5. When green, report: the PR is now waiting for review. The automated
-   review posts its comments on the PR within minutes — tell the user to
+   review posts its comments on the PR within minutes; tell the user to
    read it and run `/gh-address-comments` to triage and address what they
    retain. Review comments are never auto-addressed: the triage is human.
