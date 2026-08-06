@@ -50,6 +50,15 @@ change:
 
 Users pick up new versions with `/plugin marketplace update flux`.
 
+Each version bump also gets a **git tag and a GitHub release** on the bump
+commit, so the repository sidebar always shows the current version:
+
+```shell
+git tag -a vX.Y.Z -m "short summary"
+git push origin vX.Y.Z
+gh release create vX.Y.Z --title "vX.Y.Z — short summary" --notes "…"
+```
+
 ## Pull requests
 
 - English everywhere: code, comments, commits, PR, docs.
