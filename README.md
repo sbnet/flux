@@ -9,24 +9,32 @@ the **marketplace** that distributes it.
 
 ## Installation
 
-In Claude Code:
+In a Claude Code session:
 
 ```shell
 /plugin marketplace add sbnet/flux
 /plugin install flux@flux
 ```
 
+Or from the terminal — required with the VS Code extension, where the
+`/plugin` command is not available:
+
+```shell
+claude plugin marketplace add sbnet/flux
+claude plugin install flux@flux
+```
+
 Then, in the project you want flux to manage:
 
 ```shell
-/flux-init
+/flux:flux-init
 ```
 
-To update to the latest version:
+To update to the latest version (session or terminal):
 
 ```shell
-/plugin marketplace update flux
-/reload-plugins
+/plugin marketplace update flux        # or: claude plugin marketplace update flux
+/reload-plugins                        # or restart the session
 ```
 
 `flux-init` detects the stack, writes `flux-config.yml`, installs the CI
