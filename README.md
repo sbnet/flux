@@ -55,17 +55,24 @@ Two lines of defense:
 
 ## Skills
 
-- **flux-init** — set up flux in a project.
-- **spec-interview** — in-depth feature interview, written to
-  `specs/SPEC-<ref>.md` with a status frontmatter and an index.
-- **gh-issue** — actionable GitHub issues, linked to their spec.
-- **gh-pr** — PRs written from the actual diff, with a CI watch-and-fix loop.
-- **flux-feature** — the full cycle end to end; only merging stays human.
-- **gh-address-comments** — review comments: human triage, autonomous fixes.
-- **geo** — visibility in generative engines (renderability, llms.txt,
-  citability), complementary to classic SEO.
-- **ui-review** — heuristic UI/UX review of the running app: breakpoints,
-  state coverage, forms, consistency.
+Full reference with usage, triggers and examples:
+[documentation/skills.md](documentation/skills.md).
+
+| Skill | One line |
+|---|---|
+| [flux-init](documentation/skills.md#flux-init) | set up flux in a project (config, gates, workflows, contract) |
+| [spec-interview](documentation/skills.md#spec-interview) | in-depth interview → `specs/SPEC-<ref>.md` + index |
+| [gh-issue](documentation/skills.md#gh-issue) | actionable GitHub issue, back-linked to its spec |
+| [flux-feature](documentation/skills.md#flux-feature) | the full cycle end to end; only merging stays human |
+| [gh-pr](documentation/skills.md#gh-pr) | PR from the actual diff + CI watch-and-fix loop |
+| [gh-address-comments](documentation/skills.md#gh-address-comments) | review comments: human triage, autonomous fixes |
+| [geo](documentation/skills.md#geo) | visibility in generative engines, complementary to SEO |
+| [ui-review](documentation/skills.md#ui-review) | heuristic UI/UX review of the running app |
+
+Two subagents complete the toolkit:
+[reviewer](documentation/skills.md#reviewer) (conditional pre-PR review)
+and [qa](documentation/skills.md#qa) (runs the app, walks the spec's
+flows).
 
 Together with the hooks they cover the full contribution cycle:
 spec → issue → branch → gated push → PR → CI + automated review → human
