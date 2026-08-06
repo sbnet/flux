@@ -62,6 +62,10 @@ Two lines of defense:
 - **gh-pr** — PRs written from the actual diff, with a CI watch-and-fix loop.
 - **flux-feature** — the full cycle end to end; only merging stays human.
 - **gh-address-comments** — review comments: human triage, autonomous fixes.
+- **geo** — visibility in generative engines (renderability, llms.txt,
+  citability), complementary to classic SEO.
+- **ui-review** — heuristic UI/UX review of the running app: breakpoints,
+  state coverage, forms, consistency.
 
 Together with the hooks they cover the full contribution cycle:
 spec → issue → branch → gated push → PR → CI + automated review → human
