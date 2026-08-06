@@ -11,7 +11,7 @@
       "name": "flux",
       "source": "./plugins/flux",
       "description": "Quasi-autonomous development workflow: config-driven quality gates, spec → issue → PR cycle, automated review with human merge",
-      "version": "0.1.0"
+      "version": "0.2.0"
     }
   ]
 }
