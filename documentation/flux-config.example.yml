@@ -1,0 +1,28 @@
+# flux-config.yml — schéma v1 (référence annotée)
+# Ce fichier vit à la racine de chaque projet piloté par Flux.
+# Il est lu par les scripts de hooks (via yq) et par les skills Flux.
+# Règle : on n'ajoute une clé que lorsqu'un consommateur (hook ou skill)
+# en a besoin.
+
+project:
+  name: ats               # identifiant humain du projet
+
+forge: github             # v1 : github uniquement ; gitea/forgejo envisagé en v2
+
+commands:                 # commandes exécutées par les hooks — une seule
+  lint: "vendor/bin/pint --test"          # vérification, ne modifie pas
+  lint_fix: "vendor/bin/pint"             # variante corrective (optionnelle)
+  static: "vendor/bin/phpstan analyse"    # analyse statique (optionnelle)
+  test: "php artisan test"
+  build: "npm run build"
+
+gates:                    # quelles étapes bloquent quel événement
+  on_edit: [lint]         # PostToolUse (Edit/Write) — doit rester rapide
+  on_push: [lint, static, test]   # PreToolUse sur `git push`
+  on_stop: []             # Stop hook — vide en v1
+
+specs:
+  dir: specs/             # skill specs : SPEC-<ref>.md + index README.md
+
+github:
+  labels: [flux]          # labels par défaut pour gh-issue / gh-pr
