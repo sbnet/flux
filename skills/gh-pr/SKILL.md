@@ -53,3 +53,17 @@ Spec: `specs/SPEC-<ref>.md`   <!-- if applicable -->
    (automated then human) before merge. Never merge yourself.
 3. On merge: if a spec is linked, set its frontmatter to
    `status: implemented` and update the `specs/README.md` index.
+
+## After creation: watch CI and fix autonomously
+
+Do not stop at "PR opened". A PR with red CI is not delivered.
+
+1. `gh pr checks --watch --fail-fast` (fall back to polling `gh pr checks`
+   if `--watch` is unavailable).
+2. On failure: `gh run view <run-id> --log-failed` to get the exact error.
+3. Fix the cause on the branch (never by weakening the gate or the test),
+   let flux-gate validate locally, push. The checks re-run.
+4. Loop until green. After 3 failed attempts on the same error, stop and
+   report the diagnosis to the user instead of thrashing.
+5. When green, report: the PR is now waiting for review — automated review
+   comments, then a human decides the merge.
