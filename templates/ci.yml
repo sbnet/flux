@@ -34,8 +34,10 @@ jobs:
           php artisan key:generate
           php artisan wayfinder:generate
 
-      - name: Run flux gates (on_push)
-        run: bash .claude/hooks/flux-gate.sh ci
-
+      # Build before the gates: Inertia feature tests render the app layout,
+      # which requires the Vite manifest to exist.
       - name: Build
         run: npm run build
+
+      - name: Run flux gates (on_push)
+        run: bash .claude/hooks/flux-gate.sh ci
