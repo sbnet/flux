@@ -6,5 +6,6 @@
     "name": "Stéphane Brun"
   },
   "repository": "https://github.com/sbnet/flux",
+  "license": "MIT",
   "keywords": ["workflow", "quality-gates", "hooks", "specs", "github"]
 }

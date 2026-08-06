@@ -60,6 +60,11 @@ Together with the hooks they cover the full contribution cycle:
 spec → issue → branch → gated push → PR → CI + automated review → human
 triage → human merge.
 
+## License
+
+[MIT](LICENSE) © Stéphane Brun. Any use, commercial included, requires
+keeping the copyright notice — that is the attribution.
+
 ## Status
 
 Work in progress — see the
