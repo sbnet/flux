@@ -17,6 +17,10 @@ hooks enforce them on edits and pushes.
   config to get to green. If a gate blocks, fix the cause.
 - Ask only for: scope changes not covered by the spec, destructive
   operations, or after 3 failed attempts at the same error.
+- **Review comments are triaged by the human, never auto-addressed.**
+  When a review lands on a PR, the user reads it and runs
+  `/gh-address-comments`; the agent assesses each finding, the user picks,
+  the agent fixes what was retained.
 
 ## Conventions
 

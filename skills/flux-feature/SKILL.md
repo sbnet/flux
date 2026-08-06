@@ -41,3 +41,5 @@ that belongs to a human is merging the PR.
    3 attempts on the same error.
 8. **Report.** Give the user the PR URL, CI status, spec/issue links, and
    anything left open. The PR now waits for automated + human review.
+   Point the user to the automated review once posted: they read it, then
+   run `/gh-address-comments` — triage is theirs, fixing is autonomous.
