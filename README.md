@@ -27,7 +27,7 @@ claude plugin install flux@flux
 Then, in the project you want flux to manage:
 
 ```shell
-/flux:flux-init
+/flux:init
 ```
 
 To update to the latest version (session or terminal):
@@ -37,7 +37,7 @@ To update to the latest version (session or terminal):
 /reload-plugins                        # or restart the session
 ```
 
-`flux-init` detects the stack, writes `flux-config.yml`, installs the CI
+`/flux:init` detects the stack, writes `flux-config.yml`, installs the CI
 gate script and workflows, the `CLAUDE.md` contract and the specs index.
 Requirements: `yq` v4, `gh` ≥ 2.20 authenticated, and a
 `CLAUDE_CODE_OAUTH_TOKEN` repository secret for the automated review.
@@ -68,10 +68,10 @@ Full reference with usage, triggers and examples:
 
 | Skill | One line |
 |---|---|
-| [flux-init](documentation/skills.md#flux-init) | set up flux in a project (config, gates, workflows, contract) |
+| [init](documentation/skills.md#init) | set up flux in a project (config, gates, workflows, contract) |
 | [spec-interview](documentation/skills.md#spec-interview) | in-depth interview → `specs/SPEC-<ref>.md` + index |
 | [gh-issue](documentation/skills.md#gh-issue) | actionable GitHub issue, back-linked to its spec |
-| [flux-feature](documentation/skills.md#flux-feature) | the single entry point: calibrates and drives the full cycle |
+| [feature](documentation/skills.md#feature) | the single entry point: calibrates and drives the full cycle |
 | [gh-pr](documentation/skills.md#gh-pr) | PR from the actual diff + CI watch-and-fix loop |
 | [gh-address-comments](documentation/skills.md#gh-address-comments) | review comments: human triage, autonomous fixes |
 | [geo](documentation/skills.md#geo) | visibility in generative engines, complementary to SEO |
@@ -83,7 +83,7 @@ and [qa](documentation/skills.md#qa) (runs the app, walks the spec's
 flows).
 
 Day to day, one command covers the whole contribution cycle:
-`/flux:flux-feature <what you want>` calibrates the ceremony to the change
+`/flux:feature <what you want>` calibrates the ceremony to the change
 (trivial, standard or full), then drives spec → issue → branch → gated
 push → PR → CI + automated review → human triage, all in one session.
 The two decisions that stay yours: the triage and the merge. Post-merge

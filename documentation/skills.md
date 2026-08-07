@@ -9,19 +9,19 @@ apply, or when you ask.
 Where each one sits in the cycle:
 
 ```
-/flux:flux-feature (single entry point, calibrates the path)
+/flux:feature (single entry point, calibrates the path)
   └→ [spec-interview → gh-issue]  (full path only; standard: auto-issue;
       trivial: neither)
   └→ implementation + gates → qa / reviewer → gh-pr → CI
   └→ automated review → triage (human, in-session) → human merge
       └→ post-merge: spec status + branch deletion, automated
 
-flux-init = one-time project setup       geo / ui-review = on demand
+init = one-time project setup       geo / ui-review = on demand
 ```
 
 ---
 
-## flux-init
+## init
 
 **What.** Sets up flux in the current project: detects the stack, writes
 `flux-config.yml`, installs the CI gate script (`.claude/hooks/flux-gate.sh`),
@@ -46,7 +46,7 @@ repository. The spec-lifecycle workflow flips a merged PR's linked spec to
 commands in `flux-config.yml`.
 
 ```
-/flux:flux-init
+/flux:init
 ```
 
 ## spec-interview
@@ -58,7 +58,7 @@ feature: `specs/SPEC-<ref>.md` with a status frontmatter
 index.
 
 **When.** At the start of any non-trivial feature, before any code.
-Usually launched by flux-feature on its full path; invoke it directly to
+Usually launched by the feature skill on its full path; invoke it directly to
 write a spec without starting the build. The spec's acceptance criteria
 become the contract that `qa`, `reviewer` and the automated PR review all
 check against.
@@ -77,7 +77,7 @@ and the skill offers to chain into `/flux:gh-issue`.
 acceptance criteria, spec reference) with the project labels, and
 back-links the issue number into the spec's frontmatter and index row.
 
-**When.** Usually automatic: flux-feature creates the issue itself on its
+**When.** Usually automatic: the feature skill creates the issue itself on its
 standard and full paths. Invoke it standalone for bugs and tasks that need
 tracking without building right away.
 
@@ -90,7 +90,7 @@ spec implies independent work streams), updated spec frontmatter.
 /flux:gh-issue
 ```
 
-## flux-feature
+## feature
 
 **What.** The single entry point to build anything. Calibrates the path to
 the change and announces it: **trivial** (no spec, no issue), **standard**
@@ -110,7 +110,7 @@ picture read the [walkthrough](walkthrough.md).
 without the human triage.
 
 ```
-/flux:flux-feature implement SPEC-candidate-management
+/flux:feature implement SPEC-candidate-management
 ```
 
 ## gh-pr
@@ -120,7 +120,7 @@ body built from the real diff (summary, `Closes #N`, spec link, test plan,
 review notes), then watches CI and fixes failures autonomously (3-attempt
 cap per error). Ends by pointing you to the automated review for triage.
 
-**When.** Implementation done and pushed, either invoked by flux-feature
+**When.** Implementation done and pushed, either invoked by the feature skill
 or standalone if you drove the implementation manually.
 
 **Reads.** `git diff main...HEAD`, `flux-config.yml` (`github.labels`),
@@ -139,7 +139,7 @@ address in one multi-choice question, then fixes the retained items
 autonomously and replies on every comment: addressed (with commit) or
 declined (with your reason).
 
-**When.** Inside a flux-feature session, this flow runs as soon as the
+**When.** Inside a `/flux:feature` session, this flow runs as soon as the
 automated review lands. Invoke it standalone when the review arrived after
 your session ended. Either way the triage itself is **always human**: it
 is the step that gives the merge decision its substance.

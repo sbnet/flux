@@ -65,7 +65,7 @@ Do not stop at "PR opened". A PR with red CI is not delivered.
    let flux-gate validate locally, push. The checks re-run.
 4. Loop until green. After 3 failed attempts on the same error, stop and
    report the diagnosis to the user instead of thrashing.
-5. When green: if you are driving the full cycle (flux-feature), keep
+5. When green: if you are driving the full cycle (feature skill), keep
    waiting for the automated review and chain into the triage flow of
    `gh-address-comments` in the same session. Standalone, report that the
    PR is waiting for review and tell the user to read it and run

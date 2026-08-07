@@ -1,9 +1,9 @@
 ---
-name: flux-feature
+name: feature
 description: The single entry point to build anything. Calibrates the process to the change (trivial, standard or full), then drives it end to end (spec, issue, implementation, gates, PR, CI, review triage). Only merging stays human. Use when the user asks to implement, fix or build something.
 ---
 
-# Skill: flux-feature
+# Skill: feature
 
 ## Purpose
 

@@ -9,7 +9,7 @@ hooks enforce them on edits and pushes.
 - **Be autonomous through the delivery cycle.** When an implementation is
   done, do not stop and wait: run the gates, commit (conventional commits),
   push, open the PR (`gh-pr` skill conventions), then watch CI and fix
-  failures until green. The `flux-feature` skill describes the full cycle.
+  failures until green. The `feature` skill describes the full cycle.
 - **The only human step is merging the PR.** Never merge; never approve
   reviews. Everything else, including fixing red CI on an open PR, is
   yours to carry without asking.

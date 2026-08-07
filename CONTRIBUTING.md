@@ -11,7 +11,7 @@ plugins/flux/                     # the plugin itself
 ├── skills/                       # one directory per skill (SKILL.md)
 ├── agents/                       # subagents (reviewer, qa)
 ├── hooks/                        # hooks.json + flux-gate.sh
-└── templates/                    # files flux-init copies into projects
+└── templates/                    # files the init skill copies into projects
 documentation/                    # scoping study, annotated config reference
 ```
 

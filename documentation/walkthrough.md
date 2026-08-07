@@ -7,16 +7,16 @@ for how the pieces fit together, and for the one judgment call the cycle
 contains (step 5).
 
 Prerequisites: the flux plugin is installed, the project went through
-`/flux-init`, and the `CLAUDE_CODE_OAUTH_TOKEN` secret is set on the repo.
+`/flux:init`, and the `CLAUDE_CODE_OAUTH_TOKEN` secret is set on the repo.
 
 ---
 
-## 0. One command: `/flux:flux-feature`
+## 0. One command: `/flux:feature`
 
 Since v0.4 the whole cycle starts with a single command:
 
 ```
-/flux:flux-feature candidate management (CRUD)
+/flux:feature candidate management (CRUD)
 ```
 
 The skill calibrates the path to the change and announces it:
@@ -137,7 +137,7 @@ CI green, review read, findings triaged. Merging is yours, the one action
 the agent never performs. The rest of the ending is automated and
 deterministic: the spec-lifecycle workflow flips the linked spec to
 `status: implemented` and updates the index, and GitHub deletes the merged
-branch (repository setting enabled by flux-init).
+branch (repository setting enabled by `/flux:init`).
 
 ---
 
