@@ -41,7 +41,9 @@ live in `<plugin root>/templates/`.
    or the API). Enable automatic head-branch deletion:
    `gh api -X PATCH repos/<owner>/<repo> -f delete_branch_on_merge=true`.
    Check the `CLAUDE_CODE_OAUTH_TOKEN` secret exists (`gh secret list`);
-   if not, tell the user to run `claude setup-token` and
-   `gh secret set CLAUDE_CODE_OAUTH_TOKEN`.
+   if not, tell the user to run `claude setup-token` then
+   `gh secret set CLAUDE_CODE_OAUTH_TOKEN -R <owner>/<repo>`, and point
+   them to `documentation/setup.md` in the flux repository for the
+   API-key alternative and troubleshooting.
 9. **Report.** List what was created/updated, what needs a session restart
    (plugin hooks, skills), and the one manual step if the secret is missing.

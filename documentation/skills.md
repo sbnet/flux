@@ -42,8 +42,9 @@ repository. The spec-lifecycle workflow flips a merged PR's linked spec to
 `status: implemented` and updates the index, deterministically.
 
 **You still have to.** Create the `CLAUDE_CODE_OAUTH_TOKEN` secret
-(`claude setup-token`, then `gh secret set`), and review the inferred
-commands in `flux-config.yml`.
+(`claude setup-token`, then `gh secret set`; full instructions in the
+[setup guide](setup.md)), and review the inferred commands in
+`flux-config.yml`.
 
 ```
 /flux:init

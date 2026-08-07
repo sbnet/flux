@@ -13,7 +13,9 @@ It comes in two parts:
   an interrupted cycle, or use a single piece in isolation.
 
 Prerequisites: the flux plugin is installed, the project went through
-`/flux:init`, and the `CLAUDE_CODE_OAUTH_TOKEN` secret is set on the repo.
+`/flux:init`, and the `CLAUDE_CODE_OAUTH_TOKEN` secret is set on the repo
+so the automated review can run. See the [setup guide](setup.md) if any of
+that is not in place yet.
 
 ---
 

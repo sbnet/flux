@@ -39,8 +39,12 @@ To update to the latest version (session or terminal):
 
 `/flux:init` detects the stack, writes `flux-config.yml`, installs the CI
 gate script and workflows, the `CLAUDE.md` contract and the specs index.
-Requirements: `yq` v4, `gh` ≥ 2.20 authenticated, and a
-`CLAUDE_CODE_OAUTH_TOKEN` repository secret for the automated review.
+
+Requirements: `yq` v4, `gh` 2.20 or later authenticated, and a
+`CLAUDE_CODE_OAUTH_TOKEN` repository secret so the automated review can
+run in CI. The [setup guide](documentation/setup.md) covers the secret
+step by step, along with the API-key alternative, model selection and
+troubleshooting.
 
 ## How it works
 
