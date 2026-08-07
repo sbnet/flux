@@ -11,13 +11,31 @@ Prerequisites: the flux plugin is installed, the project went through
 
 ---
 
-## 1. Spec: `/flux:spec-interview`
+## 0. One command: `/flux:flux-feature`
+
+Since v0.4 the whole cycle starts with a single command:
 
 ```
-/flux:spec-interview candidate management (CRUD)
+/flux:flux-feature candidate management (CRUD)
 ```
 
-The skill interviews you in rounds (data model, flows, edge cases,
+The skill calibrates the path to the change and announces it:
+
+- **trivial** (typo, label, config tweak): no spec, no issue; it branches
+  and fixes, then jumps to step 6.
+- **standard** (small, well-described change): no interview; the issue is
+  generated from your description and serves as the contract; it jumps to
+  step 3.
+- **full** (anything non-trivial): steps 1 and 2 below happen first.
+
+The candidate CRUD is a full-path feature; the steps below show what the
+command drives. Each piece also exists as a standalone skill when you need
+it in isolation.
+
+## 1. Spec: the interview
+
+The interview (also available standalone as `/flux:spec-interview`) runs
+in rounds (data model, flows, edge cases,
 tradeoffs), then writes `specs/SPEC-candidate-management.md` with a
 frontmatter (`status: draft`) and updates the `specs/README.md` index.
 
@@ -26,13 +44,10 @@ The acceptance criteria written here are what the reviewer, the QA agent
 and the automated PR review will all check against later; the spec is the
 contract for the whole cycle.
 
-## 2. Issue: `/flux:gh-issue`
+## 2. Issue: automatic
 
-```
-/flux:gh-issue
-```
-
-Creates the GitHub issue from the spec (context, goal, acceptance criteria,
+Once the spec is validated, the issue is created without any invocation
+(standalone form: `/flux:gh-issue`). It is derived from the spec (context, goal, acceptance criteria,
 spec reference), applies the project labels, and back-links the issue number
 into the spec's frontmatter (`issue: "#2"`).
 
@@ -81,13 +96,10 @@ diff, an architecture finding after the PR means a review round trip:
 push → CI → re-review → re-triage, instead of a fix while the context is
 still hot.
 
-## 6. PR: `/flux:gh-pr`
+## 6. PR
 
-```
-/flux:gh-pr
-```
-
-Pushes (the `on_push` gates run one last time), then opens the PR: title in
+The cycle pushes (the `on_push` gates run one last time), then opens the
+PR (standalone form: `/flux:gh-pr`): title in
 conventional-commit form, body built from the actual diff: summary,
 `Closes #2`, spec link, test plan, review notes. Then the skill watches CI
 (`gh pr checks --watch`) and fixes failures autonomously, capped at three
@@ -103,13 +115,11 @@ On the pilot feature it found two real issues the gates could not see: a
 missing DB-level unique constraint the spec required, and an update path
 that silently reset a field. Both came with inline comments.
 
-## 8. Human triage: `/flux:gh-address-comments`
+## 8. Human triage, in the same session
 
-You read the review. Then:
-
-```
-/flux:gh-address-comments
-```
+The session waited for CI; it also waits for the review, so the triage
+happens right there (if the review lands after your session ended,
+`/flux:gh-address-comments` picks it up later).
 
 The agent lists each finding **with its own assessment** (it read the code,
 it may disagree with the reviewer), you pick what to address in one
@@ -124,8 +134,10 @@ disposes, the agent executes.
 ## 9. Merge: the human step
 
 CI green, review read, findings triaged. Merging is yours, the one action
-the agent never performs. After the merge, the spec's frontmatter moves to
-`status: implemented`, the index is updated, and the branch is deleted.
+the agent never performs. The rest of the ending is automated and
+deterministic: the spec-lifecycle workflow flips the linked spec to
+`status: implemented` and updates the index, and GitHub deletes the merged
+branch (repository setting enabled by flux-init).
 
 ---
 
@@ -140,3 +152,4 @@ the agent never performs. After the merge, the spec's frontmatter moves to
 | PR + CI fixes | agent | agent |
 | Review triage | **human** | agent fixes |
 | Merge | **human** | human |
+| Post-merge lifecycle | nobody (deterministic) | repository workflows |

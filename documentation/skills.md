@@ -9,10 +9,14 @@ apply, or when you ask.
 Where each one sits in the cycle:
 
 ```
-spec-interview → gh-issue → [implementation + gates] → qa / reviewer
-      → gh-pr → CI + automated review → gh-address-comments → human merge
-                    └── flux-feature drives the whole line ──┘
-flux-init  = one-time project setup        geo / ui-review = on demand
+/flux:flux-feature (single entry point, calibrates the path)
+  └→ [spec-interview → gh-issue]  (full path only; standard: auto-issue;
+      trivial: neither)
+  └→ implementation + gates → qa / reviewer → gh-pr → CI
+  └→ automated review → triage (human, in-session) → human merge
+      └→ post-merge: spec status + branch deletion, automated
+
+flux-init = one-time project setup       geo / ui-review = on demand
 ```
 
 ---
@@ -32,7 +36,10 @@ changed `flux-gate.sh`).
 static analysis / types / test / build commands.
 
 **Produces.** `flux-config.yml`, `.claude/hooks/flux-gate.sh`,
-`.github/workflows/{ci,claude-review}.yml`, `CLAUDE.md`, `specs/README.md`.
+`.github/workflows/{ci,claude-review,spec-lifecycle}.yml`, `CLAUDE.md`,
+`specs/README.md`. Also enables automatic head-branch deletion on the
+repository. The spec-lifecycle workflow flips a merged PR's linked spec to
+`status: implemented` and updates the index, deterministically.
 
 **You still have to.** Create the `CLAUDE_CODE_OAUTH_TOKEN` secret
 (`claude setup-token`, then `gh secret set`), and review the inferred
@@ -50,9 +57,11 @@ feature: `specs/SPEC-<ref>.md` with a status frontmatter
 (`draft → validated → implemented`), and maintains the `specs/README.md`
 index.
 
-**When.** At the start of any non-trivial feature, before any code. The
-spec's acceptance criteria become the contract that `qa`, `reviewer` and
-the automated PR review all check against.
+**When.** At the start of any non-trivial feature, before any code.
+Usually launched by flux-feature on its full path; invoke it directly to
+write a spec without starting the build. The spec's acceptance criteria
+become the contract that `qa`, `reviewer` and the automated PR review all
+check against.
 
 **Produces.** `specs/SPEC-<ref>.md` (`<ref>` = issue number or stable
 slug), updated index. On your validation the status moves to `validated`
@@ -68,8 +77,9 @@ and the skill offers to chain into `/flux:gh-issue`.
 acceptance criteria, spec reference) with the project labels, and
 back-links the issue number into the spec's frontmatter and index row.
 
-**When.** After a spec is validated (chained from spec-interview), or
-standalone for bugs and small tasks that need tracking without a spec.
+**When.** Usually automatic: flux-feature creates the issue itself on its
+standard and full paths. Invoke it standalone for bugs and tasks that need
+tracking without building right away.
 
 **Reads.** `flux-config.yml` (`github.labels`), the spec if one exists.
 
@@ -82,17 +92,22 @@ spec implies independent work streams), updated spec frontmatter.
 
 ## flux-feature
 
-**What.** Drives a feature end to end without stopping between steps:
-branch → implementation (tests included) → gates → local verification
-(`qa` always when there are user flows; `reviewer` per the risk rule) →
-commit → push → PR → CI watch-and-fix. Stops only for scope changes,
-destructive operations, or after 3 failed attempts on one error.
+**What.** The single entry point to build anything. Calibrates the path to
+the change and announces it: **trivial** (no spec, no issue), **standard**
+(issue auto-generated from your description), **full** (interview → spec →
+auto-issue). Then drives everything: branch → implementation (tests
+included) → gates → local verification (`qa` when there are user flows;
+`reviewer` per the risk rule) → PR → CI watch-and-fix → waits for the
+automated review and runs the triage in the same session. Stops only for
+scope changes, destructive operations, or after 3 failed attempts on one
+error.
 
-**When.** "Implement the spec / issue #N": the standard way to build
-something once the spec exists. For the full picture read the
-[walkthrough](walkthrough.md).
+**When.** Any "build / fix / implement X" request. This is the standard way
+to work; the other skills remain available standalone. For the full
+picture read the [walkthrough](walkthrough.md).
 
-**Never does.** Merge, approve, bypass a gate.
+**Never does.** Merge, approve, bypass a gate, address review comments
+without the human triage.
 
 ```
 /flux:flux-feature implement SPEC-candidate-management
@@ -124,9 +139,10 @@ address in one multi-choice question, then fixes the retained items
 autonomously and replies on every comment: addressed (with commit) or
 declined (with your reason).
 
-**When.** After the automated review lands on your PR: you read the
-review, then invoke this. By design it is **never automatic**: the triage
-is the human step that gives the merge decision its substance.
+**When.** Inside a flux-feature session, this flow runs as soon as the
+automated review lands. Invoke it standalone when the review arrived after
+your session ended. Either way the triage itself is **always human**: it
+is the step that gives the merge decision its substance.
 
 ```
 /flux:gh-address-comments

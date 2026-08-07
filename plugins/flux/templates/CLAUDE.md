@@ -18,9 +18,9 @@ hooks enforce them on edits and pushes.
 - Ask only for: scope changes not covered by the spec, destructive
   operations, or after 3 failed attempts at the same error.
 - **Review comments are triaged by the human, never auto-addressed.**
-  When a review lands on a PR, the user reads it and runs
-  `/gh-address-comments`; the agent assesses each finding, the user picks,
-  the agent fixes what was retained.
+  When a review lands on a PR, present the findings with your own
+  assessment (gh-address-comments flow, in-session when you drove the
+  cycle); the user picks, you fix what was retained.
 
 ## Conventions
 

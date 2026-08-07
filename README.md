@@ -71,7 +71,7 @@ Full reference with usage, triggers and examples:
 | [flux-init](documentation/skills.md#flux-init) | set up flux in a project (config, gates, workflows, contract) |
 | [spec-interview](documentation/skills.md#spec-interview) | in-depth interview → `specs/SPEC-<ref>.md` + index |
 | [gh-issue](documentation/skills.md#gh-issue) | actionable GitHub issue, back-linked to its spec |
-| [flux-feature](documentation/skills.md#flux-feature) | the full cycle end to end; only merging stays human |
+| [flux-feature](documentation/skills.md#flux-feature) | the single entry point: calibrates and drives the full cycle |
 | [gh-pr](documentation/skills.md#gh-pr) | PR from the actual diff + CI watch-and-fix loop |
 | [gh-address-comments](documentation/skills.md#gh-address-comments) | review comments: human triage, autonomous fixes |
 | [geo](documentation/skills.md#geo) | visibility in generative engines, complementary to SEO |
@@ -82,9 +82,13 @@ Two subagents complete the toolkit:
 and [qa](documentation/skills.md#qa) (runs the app, walks the spec's
 flows).
 
-Together with the hooks they cover the full contribution cycle:
-spec → issue → branch → gated push → PR → CI + automated review → human
-triage → human merge.
+Day to day, one command covers the whole contribution cycle:
+`/flux:flux-feature <what you want>` calibrates the ceremony to the change
+(trivial, standard or full), then drives spec → issue → branch → gated
+push → PR → CI + automated review → human triage, all in one session.
+The two decisions that stay yours: the triage and the merge. Post-merge
+housekeeping (spec status, branch deletion) is automated by the
+repository.
 
 **New to flux?** Read the
 [step-by-step walkthrough](documentation/walkthrough.md): one real
