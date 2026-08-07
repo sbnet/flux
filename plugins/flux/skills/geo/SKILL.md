@@ -1,6 +1,6 @@
 ---
 name: geo
-description: Audit and improve visibility in generative engines (AI answers, LLM-powered search): GEO, complementary to classic SEO. Use when the user asks about GEO, AI search visibility, llms.txt, or being cited by AI assistants.
+description: "Audit and improve visibility in generative engines (AI answers, LLM-powered search): GEO, complementary to classic SEO. Use when the user asks about GEO, AI search visibility, llms.txt, or being cited by AI assistants."
 ---
 
 # Skill: GEO (Generative Engine Optimization)

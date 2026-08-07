@@ -1,6 +1,6 @@
 ---
 name: ui-review
-description: Heuristic UI/UX review of the running app: screenshots at multiple breakpoints, state coverage, consistency, form ergonomics. Use when the user asks for a UI review, UX feedback, or a design pass on pages or flows.
+description: "Heuristic UI/UX review of the running app: screenshots at multiple breakpoints, state coverage, consistency, form ergonomics. Use when the user asks for a UI review, UX feedback, or a design pass on pages or flows."
 ---
 
 # Skill: ui-review

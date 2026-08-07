@@ -1,6 +1,6 @@
 ---
 name: init
-description: Set up flux in the current project: config, gate script for CI, workflows, CLAUDE.md contract, specs index, GitHub label. Use when the user asks to initialize/install flux in a project.
+description: "Set up flux in the current project: config, gate script for CI, workflows, CLAUDE.md contract, specs index, GitHub label. Use when the user asks to initialize/install flux in a project."
 ---
 
 # Skill: init

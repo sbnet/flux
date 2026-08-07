@@ -1,6 +1,6 @@
 ---
 name: gh-address-comments
-description: Triage and address review comments on the current branch's PR: the human picks what to fix, the agent fixes it autonomously. Use when the user asks to handle/address review comments on a PR.
+description: "Triage and address review comments on the current branch's PR: the human picks what to fix, the agent fixes it autonomously. Use when the user asks to handle/address review comments on a PR."
 ---
 
 # Skill: gh-address-comments
