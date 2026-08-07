@@ -37,7 +37,7 @@ user can override the choice at any time.
    observable user flows. Run the `reviewer` subagent per the risk rule
    (diff spanning many files or layers, schema or data migration,
    sensitive area, spec with many criteria); skip it for small contained
-   changes. Rationale: `documentation/walkthrough.md`, step 5.
+   changes. Rationale: `documentation/walkthrough.md`, part 2 step 5.
 4. Conventional commits, `git push -u origin HEAD`.
 
 ## Step 3: PR and CI

@@ -192,7 +192,7 @@ design**: run it when a post-PR finding would be expensive: diff spanning
 many files/layers, schema or data migration, sensitive area (auth,
 payments, permissions, files), spec with many criteria. Skip it for small
 contained changes: the automated PR review covers those. Rationale and a
-worked example: [walkthrough](walkthrough.md), step 5.
+worked example: [walkthrough](walkthrough.md), part 2 step 5.
 
 ### qa
 

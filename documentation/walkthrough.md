@@ -1,60 +1,114 @@
 # A feature, end to end with flux
 
 This walkthrough follows one real feature, a candidate CRUD in a
-Laravel/Vue/Inertia app, through the whole flux cycle, step by step. Every
-command shown was actually run on the pilot project. Use it as the reference
-for how the pieces fit together, and for the one judgment call the cycle
-contains (step 5).
+Laravel/Vue/Inertia app, through the whole flux cycle. Every command shown
+was actually run on the pilot project.
+
+It comes in two parts:
+
+- **[Part 1](#part-1-the-normal-path)**: the normal path, one command.
+  Read this one first, it is how you work day to day.
+- **[Part 2](#part-2-the-manual-path)**: the same cycle driven skill by
+  skill, for when you want to inspect a step before the next one, resume
+  an interrupted cycle, or use a single piece in isolation.
 
 Prerequisites: the flux plugin is installed, the project went through
 `/flux:init`, and the `CLAUDE_CODE_OAUTH_TOKEN` secret is set on the repo.
 
 ---
 
-## 0. One command: `/flux:feature`
+# Part 1: The normal path
 
-Since v0.4 the whole cycle starts with a single command:
+Everything starts with one command:
 
 ```
 /flux:feature candidate management (CRUD)
 ```
 
-The skill calibrates the path to the change and announces it:
+## What it decides
 
-- **trivial** (typo, label, config tweak): no spec, no issue; it branches
-  and fixes, then jumps to step 6.
-- **standard** (small, well-described change): no interview; the issue is
-  generated from your description and serves as the contract; it jumps to
-  step 3.
-- **full** (anything non-trivial): steps 1 and 2 below happen first.
+It calibrates the ceremony to the change, announces the choice in one
+line, and proceeds. You can override that choice at any time.
 
-The candidate CRUD is a full-path feature; the steps below show what the
-command drives. Each piece also exists as a standalone skill when you need
-it in isolation.
+| Path | For | Ceremony |
+|---|---|---|
+| **trivial** | typo, label, config tweak | no spec, no issue |
+| **standard** | a small, well-described change | issue generated from your description, no interview |
+| **full** | anything non-trivial or ambiguous | interview, then spec, then issue |
 
-## 1. Spec: the interview
+The candidate CRUD is a full-path feature.
 
-The interview (also available standalone as `/flux:spec-interview`) runs
-in rounds (data model, flows, edge cases,
-tradeoffs), then writes `specs/SPEC-candidate-management.md` with a
-frontmatter (`status: draft`) and updates the `specs/README.md` index.
+## What it drives
+
+1. The interview, then the spec file and the GitHub issue (full path).
+2. Branch, implementation, tests. The gates run on every edit and on every
+   push, so a style or test failure is fixed before it ever reaches GitHub.
+3. Local verification: the `qa` subagent when the change has user flows,
+   the `reviewer` subagent when it is large or risky.
+4. The PR, written from the real diff, then CI watched and its failures
+   fixed autonomously.
+5. The wait after CI turns green: the automated review lands within
+   minutes, and the triage happens right there, in the same session.
+
+## What you do
+
+Two moments during the cycle, and only two:
+
+- **Answer the interview** (full path only). Your answers become the
+  acceptance criteria, which the QA agent, the reviewer and the automated
+  PR review all check against later.
+- **Triage the review.** The agent presents each finding with its own
+  assessment, you pick what to address, it fixes the retained items and
+  brings CI back to green.
+
+Then you merge. That is the third and last human action, and the only one
+the agent never performs.
+
+## What happens after the merge
+
+No agent involved and nothing to do: the spec-lifecycle workflow flips the
+linked spec to `status: implemented` and updates the index, and GitHub
+deletes the merged branch.
+
+If your session ends before the review lands, nothing is lost:
+`/flux:gh-address-comments` picks the triage up later.
+
+---
+
+# Part 2: The manual path
+
+The same nine steps, invoked one at a time. Everything below is what
+Part 1 does for you.
+
+## 1. Spec
+
+```
+/flux:spec-interview candidate management (CRUD)
+```
+
+The interview runs in rounds (data model, flows, edge cases, tradeoffs),
+then writes `specs/SPEC-candidate-management.md` with a frontmatter
+(`status: draft`) and updates the `specs/README.md` index.
 
 You read it, correct it, and validate: the status becomes `validated`.
 The acceptance criteria written here are what the reviewer, the QA agent
 and the automated PR review will all check against later; the spec is the
 contract for the whole cycle.
 
-## 2. Issue: automatic
+## 2. Issue
 
-Once the spec is validated, the issue is created without any invocation
-(standalone form: `/flux:gh-issue`). It is derived from the spec (context, goal, acceptance criteria,
-spec reference), applies the project labels, and back-links the issue number
-into the spec's frontmatter (`issue: "#2"`).
+```
+/flux:gh-issue
+```
+
+Creates the GitHub issue from the spec (context, goal, acceptance
+criteria, spec reference), applies the project labels, and back-links the
+issue number into the spec's frontmatter (`issue: "#2"`).
 
 ## 3. Branch and implementation
 
-The agent works on `feat/candidate-management-crud`. While it edits, the
-plugin's hooks run the gates from `flux-config.yml`:
+Work happens on `feat/candidate-management-crud`. While the agent edits,
+the plugin's hooks run the gates from `flux-config.yml`:
 
 - after each edit: `on_edit` gates (lint); a violation blocks the edit
   loop and feeds the report back to the agent, which fixes it;
@@ -98,28 +152,32 @@ still hot.
 
 ## 6. PR
 
-The cycle pushes (the `on_push` gates run one last time), then opens the
-PR (standalone form: `/flux:gh-pr`): title in
-conventional-commit form, body built from the actual diff: summary,
-`Closes #2`, spec link, test plan, review notes. Then the skill watches CI
-(`gh pr checks --watch`) and fixes failures autonomously, capped at three
-attempts on the same error.
+```
+/flux:gh-pr
+```
+
+Pushes (the `on_push` gates run one last time), then opens the PR: title
+in conventional-commit form, body built from the actual diff (summary,
+`Closes #2`, spec link, test plan, review notes). Then the skill watches
+CI (`gh pr checks --watch`) and fixes failures autonomously, capped at
+three attempts on the same error.
 
 ## 7. Automated review
 
-The `claude-review` workflow posts one sticky comment on the PR: logic,
-architecture, security, spec conformance. It does not re-check what the
-gates enforce. It updates in place on every push. It never approves.
+Nothing to invoke: the `claude-review` workflow posts one sticky comment
+on the PR covering logic, architecture, security and spec conformance. It
+does not re-check what the gates enforce. It updates in place on every
+push. It never approves.
 
 On the pilot feature it found two real issues the gates could not see: a
 missing DB-level unique constraint the spec required, and an update path
 that silently reset a field. Both came with inline comments.
 
-## 8. Human triage, in the same session
+## 8. Human triage
 
-The session waited for CI; it also waits for the review, so the triage
-happens right there (if the review lands after your session ended,
-`/flux:gh-address-comments` picks it up later).
+```
+/flux:gh-address-comments
+```
 
 The agent lists each finding **with its own assessment** (it read the code,
 it may disagree with the reviewer), you pick what to address in one

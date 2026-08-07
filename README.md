@@ -91,9 +91,8 @@ housekeeping (spec status, branch deletion) is automated by the
 repository.
 
 **New to flux?** Read the
-[step-by-step walkthrough](documentation/walkthrough.md): one real
-feature through the whole cycle, including when the local reviewer is
-worth running and when it is not.
+[walkthrough](documentation/walkthrough.md): one real feature through the
+whole cycle, first in its one-command form, then step by step.
 
 ## License
 
