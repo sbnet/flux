@@ -12,8 +12,13 @@ plugins/flux/                     # the plugin itself
 ├── agents/                       # subagents (reviewer, qa)
 ├── hooks/                        # hooks.json + flux-gate.sh
 └── templates/                    # files the init skill copies into projects
+scripts/                          # repo-level tooling (flux-doctor.sh)
 documentation/                    # scoping study, annotated config reference
 ```
+
+`scripts/` sits outside the plugin on purpose: `flux-doctor.sh` diagnoses a
+stale install, so it has to be reachable from the marketplace clone, which
+updates even when the installed plugin does not.
 
 Key design rule: flux is a **convention and configuration layer** over
 native Claude Code and GitHub primitives, not an engine. Before adding
@@ -46,9 +51,24 @@ change:
 - **minor**: new skill, agent, template, or new config key (backward
   compatible)
 - **major**: breaking change to `flux-config.yml` schema, hook behavior,
-  or a skill's contract
+  or a skill's contract, **renaming or removing a skill** included
 
-Users pick up new versions with `/plugin marketplace update flux`.
+Renaming a skill deserves the major bump even though nothing in the config
+schema changed. Users whose pin does not move keep the old skill names,
+users whose pin does move lose them, and neither group can tell which one
+they are in without checking. The release note has to name
+`scripts/flux-doctor.sh` so they can.
+
+Users do **not** reliably pick up new versions with
+`/plugin marketplace update flux`. That refreshes the marketplace clone;
+Claude Code separately pins each install to a version in
+`~/.claude/plugins/installed_plugins.json` and runs the pinned copy, and
+the pin does not always follow: re-installing can report success and
+change nothing. The update sequence that works is: refresh the marketplace,
+re-run the install, verify with
+`bash ~/.claude/plugins/marketplaces/flux/scripts/flux-doctor.sh`, repair
+with `--fix` if it reports drift, restart the session. See the
+[setup guide](documentation/setup.md#troubleshooting).
 
 Each version bump also gets a **git tag and a GitHub release** on the bump
 commit, so the repository sidebar always shows the current version:
@@ -65,7 +85,9 @@ gh release create vX.Y.Z --title "vX.Y.Z: short summary" --notes "…"
 - [Conventional commits](https://www.conventionalcommits.org/): the subject
   says what, the body says why.
 - CI must pass: `claude plugin validate` (marketplace + plugin) and
-  `shellcheck` on `flux-gate.sh`. Run both locally before pushing.
+  `shellcheck` on every `*.sh` in the repository. Run both locally before
+  pushing:
+  `find . -name '*.sh' -not -path './.git/*' -print0 | xargs -0 -r shellcheck`
 - One PR = one concern. Skills are written in imperative English, and stay
   thin: conventions and steps, not essays.
 
