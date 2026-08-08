@@ -21,5 +21,5 @@ jobs:
       - name: Validate plugin
         run: claude plugin validate plugins/flux
 
-      - name: Shellcheck gate script
-        run: shellcheck plugins/flux/hooks/flux-gate.sh
+      - name: Shellcheck every shell script
+        run: find . -name '*.sh' -not -path './.git/*' -print0 | xargs -0 -r shellcheck

@@ -96,6 +96,29 @@ architecture-heavy diffs.
 
 ## Troubleshooting
 
+**A skill answers "Unknown command: /flux:&lt;name&gt;", or `/flux:feature`
+does not exist while the marketplace is up to date.** The installed copy is
+stale. Claude Code pins each plugin to one version in
+`~/.claude/plugins/installed_plugins.json` and runs that pinned copy; the
+pin does not always follow a marketplace update, and re-installing can
+report success while changing nothing. Diagnose, then repair:
+
+```shell
+claude plugin marketplace update flux   # so the clone carries the script
+bash ~/.claude/plugins/marketplaces/flux/scripts/flux-doctor.sh
+bash ~/.claude/plugins/marketplaces/flux/scripts/flux-doctor.sh --fix
+```
+
+The first line matters when the doctor reports `No such file`: the script
+ships with the marketplace clone, and a clone older than 0.5.4 does not
+have it yet. The repair backs up `installed_plugins.json` next to itself and prints the
+command to restore it. Restart the session afterwards: the pin is read at
+startup, so `/reload-plugins` is not enough. Note the shape of the symptom:
+because 0.5.0 renamed the skills (`flux-feature` became `feature`), a stale
+pin shows up as a missing command rather than as a wrong version, and the
+old names keep working. This is a Claude Code behavior flux works around,
+not a fix to the plugin manager.
+
 **The review workflow fails immediately.** Almost always the secret:
 missing, misnamed, or set on the wrong repository. Compare
 `gh secret list` with the input name in the workflow.

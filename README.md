@@ -30,15 +30,35 @@ Then, in the project you want flux to manage:
 /flux:init
 ```
 
-To update to the latest version (session or terminal):
+`/flux:init` detects the stack, writes `flux-config.yml`, installs the CI
+gate script and workflows, the `CLAUDE.md` contract and the specs index.
+
+To update to the latest version, refresh the marketplace, re-run the
+install, then verify (session or terminal):
 
 ```shell
 /plugin marketplace update flux        # or: claude plugin marketplace update flux
-/reload-plugins                        # or restart the session
+/plugin install flux@flux              # or: claude plugin install flux@flux
 ```
 
-`/flux:init` detects the stack, writes `flux-config.yml`, installs the CI
-gate script and workflows, the `CLAUDE.md` contract and the specs index.
+```shell
+bash ~/.claude/plugins/marketplaces/flux/scripts/flux-doctor.sh
+```
+
+Refreshing the marketplace is necessary but not sufficient. Claude Code
+pins each installed plugin to one version and runs that pinned copy; the
+pin does not always follow the clone, and the install can report success
+while changing nothing. The doctor is the one command that answers *am I
+actually on the version I think I am*: it prints the marketplace version,
+the pinned version and the installed skill names, exits 0 when they agree,
+and repairs the pin with `--fix`. Restart the session after a repair: the
+pin is read at startup, so `/reload-plugins` is not enough.
+
+The command runs the copy inside the marketplace clone deliberately: that
+clone does update reliably, so the script there is current even when the
+installed plugin is stale, which is precisely the case you would be
+diagnosing. This works around a Claude Code behavior. It does not change
+how the plugin manager works.
 
 Requirements: `yq` v4, `gh` 2.20 or later authenticated, and a
 `CLAUDE_CODE_OAUTH_TOKEN` repository secret so the automated review can
