@@ -48,7 +48,9 @@ bash ~/.claude/plugins/marketplaces/flux/scripts/flux-doctor.sh
 Refreshing the marketplace is necessary but not sufficient. Claude Code
 pins each installed plugin to one version and runs that pinned copy; the
 pin does not always follow the clone, and the install can report success
-while changing nothing. The doctor is the one command that answers *am I
+while changing nothing, typically when the terminal CLI and the VS Code
+extension disagree on how to write that pin
+([details](documentation/setup.md#troubleshooting)). The doctor is the one command that answers *am I
 actually on the version I think I am*: it prints the marketplace version,
 the pinned version and the installed skill names, exits 0 when they agree,
 and repairs the pin with `--fix`. Restart the session after a repair: the

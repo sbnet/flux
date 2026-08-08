@@ -86,17 +86,33 @@ command -v yq >/dev/null 2>&1 || fail \
   "  claude plugin install $PIN_KEY"
 
 mkt_version=$(yq -p json -o json -r ".version // \"\"" "$mkt_manifest")
-pin_version=$(yq -p json -o json -r ".plugins[\"$PIN_KEY\"][0].version // \"\"" "$pin_file")
-pin_path=$(yq -p json -o json -r ".plugins[\"$PIN_KEY\"][0].installPath // \"\"" "$pin_file")
+
+# Claude Code writes the pin in two shapes, and both are in the wild: a list
+# of entries (each carrying a "scope"), or a single object. Different builds
+# on the same machine write different ones, which is how an install can
+# report success and leave the running build's entry untouched. Detect the
+# shape rather than assume it, and write back into the one already there.
+pin_kind=$(yq -p json -o json -r ".plugins[\"$PIN_KEY\"] | type" "$pin_file" 2>/dev/null || true)
+case "$pin_kind" in
+  '!!seq') pin_expr=".plugins[\"$PIN_KEY\"][0]"; pin_shape="list" ;;
+  '!!map') pin_expr=".plugins[\"$PIN_KEY\"]";    pin_shape="object" ;;
+  *) fail \
+      "[flux-doctor] no pin entry for $PIN_KEY in $(short "$pin_file")." \
+      "The plugin is not installed for this config directory. Install it," \
+      "then re-run:" \
+      "  claude plugin install $PIN_KEY" ;;
+esac
+
+pin_version=$(yq -p json -o json -r "$pin_expr.version // \"\"" "$pin_file")
+pin_path=$(yq -p json -o json -r "$pin_expr.installPath // \"\"" "$pin_file")
 
 [ -n "$mkt_version" ] || fail \
   "[flux-doctor] the marketplace manifest declares no version:" \
   "$(short "$mkt_manifest")"
 
 [ -n "$pin_version" ] || fail \
-  "[flux-doctor] no pin entry for $PIN_KEY in $(short "$pin_file")." \
-  "The plugin is not installed for this config directory. Install it," \
-  "then re-run:" \
+  "[flux-doctor] the pin entry for $PIN_KEY declares no version:" \
+  "$(short "$pin_file"). Re-install the plugin, then re-run:" \
   "  claude plugin install $PIN_KEY"
 
 # --- diagnosis ------------------------------------------------------------
@@ -113,7 +129,7 @@ fi
 printf 'flux-doctor\n\n'
 printf '  config dir     %s\n' "$(short "$config_dir")"
 printf '  marketplace    %s  (%s)\n' "$mkt_version" "$(short "$mkt_dir")"
-printf '  installed pin  %s\n' "$pin_version"
+printf '  installed pin  %s  (%s form)\n' "$pin_version" "$pin_shape"
 printf '  install path   %s  (%s)\n' "$(short "${pin_path:-(none)}")" "$path_state"
 
 if [ "$mkt_version" != "$pin_version" ]; then
@@ -188,9 +204,9 @@ fi
 now=$(date -u +%Y-%m-%dT%H:%M:%S.000Z)
 
 if ! yq -p json -o json -i "
-  .plugins[\"$PIN_KEY\"][0].installPath = \"$target\" |
-  .plugins[\"$PIN_KEY\"][0].version = \"$mkt_version\" |
-  .plugins[\"$PIN_KEY\"][0].lastUpdated = \"$now\"
+  $pin_expr.installPath = \"$target\" |
+  $pin_expr.version = \"$mkt_version\" |
+  $pin_expr.lastUpdated = \"$now\"
 " "$pin_file"; then
   fail \
     "[flux-doctor] rewriting the pin failed. Restore it with:" \
@@ -198,7 +214,7 @@ if ! yq -p json -o json -i "
 fi
 
 if [ -n "$sha" ]; then
-  yq -p json -o json -i ".plugins[\"$PIN_KEY\"][0].gitCommitSha = \"$sha\"" "$pin_file" || fail \
+  yq -p json -o json -i "$pin_expr.gitCommitSha = \"$sha\"" "$pin_file" || fail \
     "[flux-doctor] rewriting gitCommitSha failed. Restore the pin with:" \
     "  cp $backup $pin_file"
 fi

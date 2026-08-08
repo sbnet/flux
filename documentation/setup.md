@@ -111,13 +111,23 @@ bash ~/.claude/plugins/marketplaces/flux/scripts/flux-doctor.sh --fix
 
 The first line matters when the doctor reports `No such file`: the script
 ships with the marketplace clone, and a clone older than 0.5.4 does not
-have it yet. The repair backs up `installed_plugins.json` next to itself and prints the
-command to restore it. Restart the session afterwards: the pin is read at
-startup, so `/reload-plugins` is not enough. Note the shape of the symptom:
-because 0.5.0 renamed the skills (`flux-feature` became `feature`), a stale
-pin shows up as a missing command rather than as a wrong version, and the
-old names keep working. This is a Claude Code behavior flux works around,
-not a fix to the plugin manager.
+have it yet. The repair backs up `installed_plugins.json` next to itself
+and prints the command to restore it. Restart the session afterwards: the
+pin is read at startup, so `/reload-plugins` is not enough.
+
+Note the shape of the symptom: because 0.5.0 renamed the skills
+(`flux-feature` became `feature`), a stale pin shows up as a missing
+command rather than as a wrong version, and the old names keep working.
+
+**Why the pin goes stale.** A machine often carries two Claude Code builds,
+the terminal CLI and the one bundled with the VS Code extension, and they
+do not write `installed_plugins.json` the same way: one stores each plugin
+as a list of entries carrying a `scope`, the other as a single object. A
+`claude plugin install` typed in the terminal then writes a shape the
+running session does not read, which is why it reports success and changes
+nothing. The doctor prints which shape it found (`list form` or `object
+form`) and repairs in place, without converting one into the other. This is
+a Claude Code behavior flux works around, not a fix to the plugin manager.
 
 **The review workflow fails immediately.** Almost always the secret:
 missing, misnamed, or set on the wrong repository. Compare
