@@ -9,20 +9,56 @@ the **marketplace** that distributes it.
 
 ## Installation
 
-In a Claude Code session:
+Installing flux writes two separate things, and telling them apart explains
+almost every update problem:
+
+- the **marketplace**, a git clone of this repository under
+  `~/.claude/plugins/marketplaces/flux`, shared by every Claude Code on the
+  machine;
+- the **install pin**, a line in `~/.claude/plugins/installed_plugins.json`
+  naming the version your sessions actually run, out of
+  `~/.claude/plugins/cache/flux/flux/<version>`.
+
+Refreshing the first does not always move the second. That gap is why
+[flux-doctor.sh](scripts/flux-doctor.sh) exists.
+
+### Install from the surface you work in
+
+A machine usually carries more than one Claude Code binary. They share the
+marketplace clone and the plugin cache, but they do not record the pin the
+same way: some builds store one object per plugin, others a list of entries
+carrying a `scope`. An install typed in the terminal can therefore write a
+pin the VS Code session never reads, print `Successfully installed`, and
+leave that session on the old version.
+
+| Surface | Which binary | Where to install from |
+|---|---|---|
+| Terminal | whatever `which claude` points at | `claude plugin …` |
+| VS Code extension | its own bundled binary, inside the extension directory | the command palette, or `/plugin` in a session |
+
+So: install and update from the surface you actually use, then verify with
+the doctor below.
+
+**In a session**, whichever surface hosts it:
 
 ```shell
 /plugin marketplace add sbnet/flux
 /plugin install flux@flux
 ```
 
-Or from the terminal (required with the VS Code extension, where the
-`/plugin` command is not available):
+**From VS Code**, if `/plugin` is unavailable in your build: command palette
+(`Ctrl+Shift+P`, `Cmd+Shift+P` on macOS), then **Claude Code: Install
+Plugin**.
+
+**From the terminal**:
 
 ```shell
 claude plugin marketplace add sbnet/flux
 claude plugin install flux@flux
 ```
+
+Restart the session in every case. The pin is read at startup, so
+`/reload-plugins` is not enough to pick up a new install.
 
 Then, in the project you want flux to manage:
 
@@ -33,40 +69,64 @@ Then, in the project you want flux to manage:
 `/flux:init` detects the stack, writes `flux-config.yml`, installs the CI
 gate script and workflows, the `CLAUDE.md` contract and the specs index.
 
-To update to the latest version, refresh the marketplace, re-run the
-install, then verify (session or terminal):
+### Updating
+
+Recent builds update a plugin in one command:
 
 ```shell
-/plugin marketplace update flux        # or: claude plugin marketplace update flux
-/plugin install flux@flux              # or: claude plugin install flux@flux
+claude plugin update flux@flux
 ```
+
+Older ones have no `plugin update`. Refresh the marketplace and re-run the
+install instead, which is also the sequence the `/plugin` commands follow in
+a session:
+
+```shell
+claude plugin marketplace update flux
+claude plugin install flux@flux
+```
+
+Either way, restart the session, then verify. `claude plugin list` is not
+that verification: it answers for the binary you typed it into, which is
+not necessarily the one running your sessions.
+
+### Checking what you actually run
 
 ```shell
 bash ~/.claude/plugins/marketplaces/flux/scripts/flux-doctor.sh
 ```
 
-Refreshing the marketplace is necessary but not sufficient. Claude Code
-pins each installed plugin to one version and runs that pinned copy; the
-pin does not always follow the clone, and the install can report success
-while changing nothing, typically when the terminal CLI and the VS Code
-extension disagree on how to write that pin
-([details](documentation/setup.md#troubleshooting)). The doctor is the one command that answers *am I
-actually on the version I think I am*: it prints the marketplace version,
-the pinned version and the installed skill names, exits 0 when they agree,
-and repairs the pin with `--fix`. Restart the session after a repair: the
-pin is read at startup, so `/reload-plugins` is not enough.
+The doctor answers one question: *am I on the version I think I am?* It
+prints the marketplace version, the pinned version and the shape it was
+stored in, the install path and whether it exists, and whether the installed
+skill names still match the marketplace. It exits 0 when they agree, 1 when
+they drift, 2 when it cannot tell, so it also works as a check in a script.
 
-The command runs the copy inside the marketplace clone deliberately: that
-clone does update reliably, so the script there is current even when the
-installed plugin is stale, which is precisely the case you would be
-diagnosing. This works around a Claude Code behavior. It does not change
-how the plugin manager works.
+Add `--fix` to repair: it copies the marketplace plugin into the versioned
+cache path and rewrites the pin in place, keeping the shape your build
+wrote. It backs up `installed_plugins.json` first and prints the command to
+restore it, and it is idempotent, so a second run reports agreement and
+changes nothing. Restart the session afterwards.
 
-Requirements: `yq` v4, `gh` 2.20 or later authenticated, and a
-`CLAUDE_CODE_OAUTH_TOKEN` repository secret so the automated review can
-run in CI. The [setup guide](documentation/setup.md) covers the secret
-step by step, along with the API-key alternative, model selection and
-troubleshooting.
+Run it from the marketplace clone, as written above, rather than from the
+installed copy: the clone updates reliably, so the script there is current
+even when the install is stale, which is exactly the situation you would be
+diagnosing.
+
+Worth being clear about what this is. Stale pins are a Claude Code
+behavior; the doctor observes and repairs the state they leave behind, and
+changes nothing about how the plugin manager works. The
+[setup guide](documentation/setup.md#troubleshooting) covers the symptom it
+is easiest to misread: after a release that renames a skill, a stale pin
+surfaces as `Unknown command: /flux:<name>` rather than as a version
+problem.
+
+### Requirements
+
+`yq` v4, `gh` 2.20 or later authenticated, and a `CLAUDE_CODE_OAUTH_TOKEN`
+repository secret so the automated review can run in CI. The
+[setup guide](documentation/setup.md) covers the secret step by step, along
+with the API-key alternative, model selection and troubleshooting.
 
 ## How it works
 
