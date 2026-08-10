@@ -28,3 +28,4 @@ specs:
 
 github:
   labels: [flux]          # default labels for gh-issue / gh-pr
+  auto_review: true       # false: claude-review only runs via /flux:gh-review, not on every push

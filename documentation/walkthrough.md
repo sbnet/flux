@@ -166,10 +166,19 @@ three attempts on the same error.
 
 ## 7. Automated review
 
-Nothing to invoke: the `claude-review` workflow posts one sticky comment
-on the PR covering logic, architecture, security and spec conformance. It
-does not re-check what the gates enforce. It updates in place on every
-push. It never approves.
+By default nothing to invoke: the `claude-review` workflow posts one
+sticky comment on the PR covering logic, architecture, security and spec
+conformance. It does not re-check what the gates enforce. It updates in
+place on every push. It never approves.
+
+That "every push" is a real cost, not just a figure of speech: set
+`github.auto_review: false` in `flux-config.yml` to stop it firing
+automatically, and launch it by hand instead, only when a review is
+actually wanted:
+
+```
+/flux:gh-review
+```
 
 On the pilot feature it found two real issues the gates could not see: a
 missing DB-level unique constraint the spec required, and an update path
