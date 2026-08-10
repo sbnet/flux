@@ -70,6 +70,16 @@ re-run the install, verify with
 with `--fix` if it reports drift, restart the session. See the
 [setup guide](documentation/setup.md#troubleshooting).
 
+That sequence only fixes which version a session *runs*; it does not touch
+files already copied into a project (`flux-config.yml`, the GitHub
+workflows, `flux-gate.sh`). A template change (like a new workflow trigger
+or a new config key) needs `/flux:init` re-run in each project that was
+initialized before the change, project by project: `flux-doctor.sh`
+cannot see into a project it is not run from. `init` is idempotent and
+safe to re-run: it fills in what changed without touching existing
+customizations. See
+[setup guide: staying in sync](documentation/setup.md#staying-in-sync).
+
 Each version bump also gets a **git tag and a GitHub release** on the bump
 commit, so the repository sidebar always shows the current version:
 

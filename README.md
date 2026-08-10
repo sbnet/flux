@@ -22,6 +22,13 @@ almost every update problem:
 Refreshing the first does not always move the second. That gap is why
 [flux-doctor.sh](scripts/flux-doctor.sh) exists.
 
+Neither of those two is a project's copy of `flux-config.yml`, the GitHub
+workflows, or `flux-gate.sh`: `/flux:init` writes those once, into each
+project. The doctor cannot see them, and updating the plugin does not
+touch them either. After an update, re-run `/flux:init` in every project
+that was set up before it; see [setup guide: staying in
+sync](documentation/setup.md#staying-in-sync).
+
 ### Install from the surface you work in
 
 A machine usually carries more than one Claude Code binary. They share the

@@ -1,6 +1,6 @@
 {
   "name": "flux",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Quasi-autonomous development workflow: config-driven quality gates (flux-gate), spec → issue → PR cycle, automated review with human merge",
   "author": {
     "name": "Stéphane Brun"

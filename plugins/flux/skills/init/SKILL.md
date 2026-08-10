@@ -21,19 +21,27 @@ live in `<plugin root>/templates/`.
 2. **Detect the stack.** Look at the project (composer.json, package.json,
    pyproject.toml…) and derive the real commands for lint / static analysis /
    types / tests / build.
-3. **`flux-config.yml`** at the project root, from
-   `templates/flux-config.yml`, with the detected commands. Ask the user only
-   if a command cannot be inferred.
+3. **`flux-config.yml`** at the project root. If it does not exist yet,
+   create it from `templates/flux-config.yml` with the detected commands,
+   asking the user only if a command cannot be inferred. If it already
+   exists, do NOT regenerate it: diff its keys against the current
+   template and add only the ones missing (new schema keys from a plugin
+   update, e.g. `github.auto_review`), at the template's default. Never
+   touch a key already present, that is the user's customization to keep.
 4. **Gate script for CI.** Copy `<plugin root>/hooks/flux-gate.sh` to
-   `.claude/hooks/flux-gate.sh` (chmod +x). In local sessions the plugin's
-   own hooks run it; the committed copy exists because CI runners have no
-   plugin cache. Do NOT add hooks to `.claude/settings.json`: the plugin
+   `.claude/hooks/flux-gate.sh` (chmod +x), overwriting unconditionally:
+   this file is not meant to be hand-edited, so there is nothing local to
+   preserve. Do NOT add hooks to `.claude/settings.json`: the plugin
    already provides them, duplicating would run every gate twice.
-5. **Workflows.** Copy `templates/ci.yml`, `templates/claude-review.yml`
-   and `templates/spec-lifecycle.yml` to `.github/workflows/`. Adapt the
-   Prepare/Build steps of ci.yml to the stack (the template is
-   Laravel/Vite-flavored). Keep the principle: build whatever
-   rendering/tests need BEFORE running the gates.
+5. **Workflows.** For each of `templates/ci.yml`, `templates/claude-review.yml`
+   and `templates/spec-lifecycle.yml`: if the target under
+   `.github/workflows/` does not exist, copy it (adapting the Prepare/Build
+   steps of ci.yml to the stack; the template is Laravel/Vite-flavored). If
+   it already exists and differs from the template, these files are
+   routinely hand-adapted (a custom `allowedTools`, a stack-specific build
+   step), so do not overwrite silently: show a diff and ask the user
+   whether to replace it, keep it, or merge by hand. Identical content
+   needs no prompt.
 6. **`CLAUDE.md`** from `templates/CLAUDE.md`: create it, or append the flux
    sections if the project already has one (never overwrite existing content).
 7. **Specs.** Create `<specs.dir>/README.md` index if missing.

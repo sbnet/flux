@@ -109,6 +109,23 @@ Both paths run the same `claude-review.yml`: the `github.auto_review`
 check only gates the automatic `pull_request` trigger. The on-demand
 `workflow_dispatch` trigger always works, whatever the setting.
 
+## Staying in sync
+
+Updating the plugin (see the [versioning section of
+CONTRIBUTING.md](../CONTRIBUTING.md#versioning)) changes the marketplace
+clone and, once repaired with `flux-doctor.sh`, which version your session
+runs. It does not touch files `/flux:init` already copied into a project:
+`flux-config.yml`, the three GitHub workflows, `flux-gate.sh`. Those only
+change when `/flux:init` runs again.
+
+So after updating the plugin, re-run `/flux:init` in every project that
+was set up before the update, not just once globally. It is idempotent:
+it fills in what's missing (a new `flux-config.yml` key at its template
+default, a workflow that does not exist yet) and asks before touching a
+workflow file that already exists and differs from the template, so
+hand-adapted steps are not silently lost. `flux-config.yml` keys already
+present are never overwritten, whatever the template default is.
+
 ## Troubleshooting
 
 **A skill answers "Unknown command: /flux:&lt;name&gt;", or `/flux:feature`
