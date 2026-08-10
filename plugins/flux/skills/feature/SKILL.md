@@ -49,11 +49,17 @@ user can override the choice at any time.
 
 ## Step 4: Review triage, in the same session
 
-When CI is green, keep waiting: the automated review lands on the PR
-within minutes (poll the PR comments). When it does, run the
-gh-address-comments flow immediately: assess each finding against the
-code, ask the user what to address in one question, fix the retained
-items, reply on the comments, and bring CI back to green.
+When CI is green, check `github.auto_review` in `flux-config.yml`
+(default `true` when absent):
+- `true`: keep waiting, the automated review lands on the PR within
+  minutes (poll the PR comments).
+- `false`: nothing fires on its own, trigger it yourself first
+  (`gh-review` flow), then wait for it the same way.
+
+When the review lands, run the gh-address-comments flow immediately:
+assess each finding against the code, ask the user what to address in one
+question, fix the retained items, reply on the comments, and bring CI
+back to green.
 
 The triage is always human, never skipped. If the session ends before the
 review lands, nothing is lost: `/flux:gh-address-comments` handles it

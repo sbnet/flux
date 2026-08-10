@@ -3,6 +3,12 @@ name: Claude review
 on:
   pull_request:
     types: [opened, synchronize, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to review"
+        required: true
+        type: number
 
 jobs:
   review:
@@ -13,17 +19,45 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
+      # workflow_dispatch runs on the default branch by default; resolve
+      # and check out the PR's actual head so an on-demand run reviews the
+      # right commit. Skipped for pull_request events, which already get
+      # the correct ref from the trigger context.
+      - name: Resolve PR head ref
+        id: pr
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ref=$(gh pr view "${{ inputs.pr_number }}" --repo "${{ github.repository }}" --json headRefName -q .headRefName)
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+
       - uses: actions/checkout@v4
         with:
+          ref: ${{ steps.pr.outputs.ref }}
           fetch-depth: 1
 
+      # github.auto_review gates only the automatic (pull_request) trigger:
+      # an explicit workflow_dispatch always runs, that's the on-demand escape
+      # hatch (/flux:gh-review) for projects that turned the automatic one off.
+      - name: Check auto-review setting
+        id: config
+        if: github.event_name == 'pull_request'
+        run: |
+          enabled=true
+          if [ -f flux-config.yml ] && [ "$(yq '.github.auto_review' flux-config.yml)" = "false" ]; then
+            enabled=false
+          fi
+          echo "enabled=$enabled" >> "$GITHUB_OUTPUT"
+
       - uses: anthropics/claude-code-action@v1
+        if: github.event_name == 'workflow_dispatch' || steps.config.outputs.enabled == 'true'
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           use_sticky_comment: true
           prompt: |
             REPO: ${{ github.repository }}
-            PR NUMBER: ${{ github.event.pull_request.number }}
+            PR NUMBER: ${{ github.event_name == 'workflow_dispatch' && inputs.pr_number || github.event.pull_request.number }}
 
             You are the automated reviewer of this flux-managed repository.
             Style, static analysis, types and tests are already enforced by

@@ -16,7 +16,7 @@ Where each one sits in the cycle:
   └→ automated review → triage (human, in-session) → human merge
       └→ post-merge: spec status + branch deletion, automated
 
-init = one-time project setup       geo / ui-review = on demand
+init = one-time project setup       geo / ui-review / gh-review = on demand
 ```
 
 ---
@@ -147,6 +147,22 @@ is the step that gives the merge decision its substance.
 
 ```
 /flux:gh-address-comments
+```
+
+## gh-review
+
+**What.** Triggers the `claude-review` GitHub workflow by hand
+(`workflow_dispatch`) for the current branch's PR, then watches the run
+and reports its URL. Works whichever way `github.auto_review` is set: it
+is the only way to get a review at all once it is `false`, and a way to
+ask for another pass on top of the automatic one otherwise.
+
+**When.** `github.auto_review: false` in `flux-config.yml` (the review
+would otherwise run on every push, which costs real usage); or any time
+you want a fresh review without pushing a new commit.
+
+```
+/flux:gh-review
 ```
 
 ## geo

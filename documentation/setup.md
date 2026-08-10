@@ -94,6 +94,21 @@ changes how your reviews behave. `claude-sonnet-5` is a good default for
 PR review; a larger model is worth it only for consistently large or
 architecture-heavy diffs.
 
+## Making review optional
+
+`claude-review` runs on every push to a PR by default, which adds up if
+you push often while iterating. Set `auto_review: false` under `github:`
+in `flux-config.yml` to stop it firing automatically; run it by hand
+instead, when a review is actually wanted:
+
+```
+/flux:gh-review
+```
+
+Both paths run the same `claude-review.yml`: the `github.auto_review`
+check only gates the automatic `pull_request` trigger. The on-demand
+`workflow_dispatch` trigger always works, whatever the setting.
+
 ## Troubleshooting
 
 **A skill answers "Unknown command: /flux:&lt;name&gt;", or `/flux:feature`
