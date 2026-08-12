@@ -11,25 +11,24 @@ Turn PR review comments (automated or human) into fixes, with exactly one
 human decision point: the triage. The human decides *what* deserves a fix;
 the execution is autonomous.
 
-## Step 1: Collect
+## Step 1: Collect and assess
 
-1. Find the PR for the current branch: `gh pr view --json number,url`.
-2. Fetch all comments: top-level (`gh pr view --comments`) and inline
-   (`gh api repos/{owner}/{repo}/pulls/<n>/comments`).
-3. Ignore comments already resolved or already addressed by a later commit
-   (check the diff since the comment's commit).
+Run the `comment-triage` subagent for the current branch's PR. It fetches
+top-level and inline comments, drops what's already resolved or addressed
+by a later commit, and reads the actual code behind each remaining one to
+form its own assessment. That reading is the expensive part; it happens in
+the subagent's own context, not this session's. It returns a compact list:
+comment, assessment, recommended keep/drop.
 
 ## Step 2: Triage (the human decision)
 
-For each open finding, present:
-
-- a one-line summary of the comment;
-- **your own assessment**: agree (and why), disagree (and why), or unclear.
-  Read the actual code before judging; never assess from the comment alone.
+Present the subagent's list to the user: for each open comment, its
+one-line summary and the assessment (agree/disagree/unclear, with why).
 
 Then ask the user in ONE question (multiSelect) which findings to address.
-Recommend a default selection based on your assessment. Do not start fixing
-anything before this triage, even findings you are sure about.
+Recommend a default selection based on the subagent's assessment. Do not
+start fixing anything before this triage, even findings you are sure
+about.
 
 ## Step 3: Fix (autonomous)
 

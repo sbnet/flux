@@ -125,10 +125,14 @@ the implementation, not after.
 ## 4. QA: always worth it
 
 The `qa` subagent starts the app for real and walks the spec's user flows
-(create, search, soft-delete, restore…), probing unhappy paths: invalid
-input, missing auth, double submission. Automated tests prove the units;
+(create, search, soft-delete, restore…). Automated tests prove the units;
 QA proves the feature. Nobody else in the cycle runs the app, so this
 step never duplicates anything.
+
+Two depths: quick (default) walks the happy path only. Deep also probes
+unhappy paths (invalid input, missing auth, double submission), and
+kicks in when asked or when the flow touches auth, payments, permissions,
+or a mutation with no automated coverage for its unhappy path.
 
 ## 5. Local review: the judgment call
 

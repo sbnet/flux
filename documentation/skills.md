@@ -133,12 +133,12 @@ the linked issue/spec.
 
 ## gh-address-comments
 
-**What.** The review-triage step. Collects all PR comments (top-level and
-inline), gives you **its own assessment of each finding** (it reads the
-code first and may disagree with the reviewer), lets you pick what to
-address in one multi-choice question, then fixes the retained items
-autonomously and replies on every comment: addressed (with commit) or
-declined (with your reason).
+**What.** The review-triage step. The `comment-triage` subagent collects
+all PR comments (top-level and inline) and gives **its own assessment of
+each finding** (it reads the code first and may disagree with the
+reviewer); you pick what to address in one multi-choice question, then the
+retained items are fixed autonomously and every comment gets a reply:
+addressed (with commit) or declined (with your reason).
 
 **When.** Inside a `/flux:feature` session, this flow runs as soon as a
 review you requested (`/flux:review`) lands. Invoke it standalone when
@@ -152,11 +152,12 @@ substance.
 
 ## review
 
-**What.** Reviews the current branch's PR right in the session (not a
-GitHub Actions job): reads the real diff, then posts the findings as
-comments on the PR, same shape as a human reviewer would leave. Nothing
-reviews a PR on its own, so this is the only way to get one, and also how
-you ask for another pass after further changes.
+**What.** Reviews the current branch's PR (not a GitHub Actions job): the
+`pr-review` subagent reads the real diff and the surrounding code, then
+the findings get posted as comments on the PR, same shape as a human
+reviewer would leave. Nothing reviews a PR on its own, so this is the only
+way to get one, and also how you ask for another pass after further
+changes.
 
 **When.** Any time a review is wanted: once CI is green and before
 merging, or again after addressing comments.
@@ -184,10 +185,12 @@ Core Web Vitals are not its job.
 ## ui-review
 
 **What.** Reviews the interface as a user experiences it: drives the
-running app with playwright-cli, screenshots each page at 375/768/1440,
-checks the state matrix (empty / loading / error / overflow), form
-ergonomics, pattern consistency, and flow friction against the spec.
-Report ordered blocking > confusing > polish.
+running app with playwright-cli, then checks form ergonomics, pattern
+consistency, and flow friction against the spec. Report ordered blocking >
+confusing > polish. Two depths: **quick** (default) screenshots each page
+at 1440 and 375, normal state only; **deep** (ask for it, e.g. "deep
+review", or when quick turns up something breakpoint/state-specific) adds
+768 and the full state matrix (empty / loading / error / overflow).
 
 **When.** A feature's UI is functional and you want a design pass; before
 a demo; or periodically on the main flows. Complementary to the
@@ -195,6 +198,7 @@ accessibility skill (full WCAG) and frontend-design (building new UI).
 
 ```
 /flux:ui-review the candidates pages
+/flux:ui-review deep review of the candidates pages
 ```
 
 ---
@@ -215,7 +219,24 @@ step 5.
 ### qa
 
 Runs the app for real and walks the spec's user flows (curl, or
-playwright-cli when the flow needs a browser), probes unhappy paths,
-cleans up after itself, and reports pass/fail per acceptance criterion
-with reproduction commands. **Unconditional** whenever the feature has
-observable flows; nothing else in the cycle actually runs the app.
+playwright-cli when the flow needs a browser), cleans up after itself, and
+reports pass/fail per acceptance criterion with reproduction commands.
+**Unconditional** whenever the feature has observable flows; nothing else
+in the cycle actually runs the app. Two depths: **quick** (default) walks
+the happy path only; **deep** also probes unhappy paths (invalid input,
+missing auth, empty states, double submission), triggered by asking for
+it or when the flow touches auth, payments, permissions, or a mutation
+with no automated coverage for its unhappy path.
+
+### pr-review
+
+Reads an open PR's diff and the surrounding code, and reports findings
+(logic, architecture, security, spec conformance) for the `review` skill
+to post as PR comments. Launched by `/flux:review`; not invoked directly.
+
+### comment-triage
+
+Collects a PR's review comments, drops what's already resolved or
+addressed, and assesses each remaining one against the actual code
+(agree/disagree/unclear, with why). Launched by `/flux:gh-address-comments`
+to prepare the human triage; not invoked directly.

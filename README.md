@@ -171,10 +171,13 @@ Full reference with usage, triggers and examples:
 | [geo](documentation/skills.md#geo) | visibility in generative engines, complementary to SEO |
 | [ui-review](documentation/skills.md#ui-review) | heuristic UI/UX review of the running app |
 
-Two subagents complete the toolkit:
-[reviewer](documentation/skills.md#reviewer) (conditional pre-PR review)
-and [qa](documentation/skills.md#qa) (runs the app, walks the spec's
-flows).
+Four subagents complete the toolkit:
+[reviewer](documentation/skills.md#reviewer) (conditional pre-PR review),
+[qa](documentation/skills.md#qa) (runs the app, walks the spec's flows,
+quick by default, deep on request), and
+[pr-review](documentation/skills.md#pr-review) /
+[comment-triage](documentation/skills.md#comment-triage), which do the
+heavy reading behind `review` and `gh-address-comments`.
 
 Day to day, one command covers the whole contribution cycle:
 `/flux:feature <what you want>` calibrates the ceremony to the change

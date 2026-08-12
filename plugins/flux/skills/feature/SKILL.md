@@ -57,11 +57,11 @@ command away:
 /flux:review
 ```
 
-If the user asks for it now, run the `review` flow yourself, in this
-session (diff the PR, post the findings as PR comments), and immediately
-run the gh-address-comments flow: assess each finding against the code,
-ask the user what to address in one question, fix the retained items,
-reply on the comments, and bring CI back to green.
+If the user asks for it now, run the `review` flow (diff the PR via the
+`pr-review` subagent, post the findings as PR comments), and immediately
+run the gh-address-comments flow: the `comment-triage` subagent assesses
+each finding, you ask the user what to address in one question, fix the
+retained items, reply on the comments, and bring CI back to green.
 
 The triage is always human, never skipped. If the user does not request a
 review in this session, hand over anyway (step 5): nothing is lost,

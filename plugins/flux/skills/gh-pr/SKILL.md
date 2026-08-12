@@ -61,7 +61,10 @@ Do not stop at "PR opened". A PR with red CI is not delivered.
 
 1. `gh pr checks --watch --fail-fast` (fall back to polling `gh pr checks`
    if `--watch` is unavailable).
-2. On failure: `gh run view <run-id> --log-failed` to get the exact error.
+2. On failure: `gh run view <run-id> --log-failed`, but don't dump it
+   whole into context. Grep it for the failing assertion or error line
+   first; pull more of that step's log only if the grep hit isn't enough
+   to diagnose the cause.
 3. Fix the cause on the branch (never by weakening the gate or the test),
    let flux-gate validate locally, push. The checks re-run.
 4. Loop until green. After 3 failed attempts on the same error, stop and
