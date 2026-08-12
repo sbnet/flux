@@ -130,10 +130,9 @@ problem.
 
 ### Requirements
 
-`yq` v4, `gh` 2.20 or later authenticated, and a `CLAUDE_CODE_OAUTH_TOKEN`
-repository secret so the automated review can run in CI. The
-[setup guide](documentation/setup.md) covers the secret step by step, along
-with the API-key alternative, model selection and troubleshooting.
+`yq` v4 and `gh` 2.20 or later, authenticated. The
+[setup guide](documentation/setup.md) covers both and their common
+install traps.
 
 ## How it works
 
@@ -151,8 +150,9 @@ Two lines of defense:
    on its own.
 2. **CI as source of truth.** The same script and the same config are
    replayed by GitHub Actions (a copy is committed in each project for the
-   runners), plus an automated PR review by `claude-code-action`. The
-   review comments, it never approves: merging is a human decision.
+   runners). The PR review itself is not a CI job: it runs locally, on
+   demand (`/flux:review`). It comments, it never approves: merging is a
+   human decision.
 
 ## Skills
 
@@ -166,6 +166,7 @@ Full reference with usage, triggers and examples:
 | [gh-issue](documentation/skills.md#gh-issue) | actionable GitHub issue, back-linked to its spec |
 | [feature](documentation/skills.md#feature) | the single entry point: calibrates and drives the full cycle |
 | [gh-pr](documentation/skills.md#gh-pr) | PR from the actual diff + CI watch-and-fix loop |
+| [review](documentation/skills.md#review) | run the PR review locally, on demand |
 | [gh-address-comments](documentation/skills.md#gh-address-comments) | review comments: human triage, autonomous fixes |
 | [geo](documentation/skills.md#geo) | visibility in generative engines, complementary to SEO |
 | [ui-review](documentation/skills.md#ui-review) | heuristic UI/UX review of the running app |
@@ -178,10 +179,11 @@ flows).
 Day to day, one command covers the whole contribution cycle:
 `/flux:feature <what you want>` calibrates the ceremony to the change
 (trivial, standard or full), then drives spec → issue → branch → gated
-push → PR → CI + automated review → human triage, all in one session.
-The two decisions that stay yours: the triage and the merge. Post-merge
-housekeeping (spec status, branch deletion) is automated by the
-repository.
+push → PR → CI, then tells you how to ask for a review (`/flux:review`,
+run locally) and runs its human triage, all in one session. The decisions
+that stay yours: whether/when to request the review, its triage, and the
+merge. Post-merge housekeeping (spec status, branch deletion) is
+automated by the repository.
 
 **New to flux?** Read the
 [walkthrough](documentation/walkthrough.md): one real feature through the

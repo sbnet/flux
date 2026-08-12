@@ -12,10 +12,8 @@ It comes in two parts:
   skill, for when you want to inspect a step before the next one, resume
   an interrupted cycle, or use a single piece in isolation.
 
-Prerequisites: the flux plugin is installed, the project went through
-`/flux:init`, and the `CLAUDE_CODE_OAUTH_TOKEN` secret is set on the repo
-so the automated review can run. See the [setup guide](setup.md) if any of
-that is not in place yet.
+Prerequisites: the flux plugin is installed and the project went through
+`/flux:init`. See the [setup guide](setup.md) if that is not in place yet.
 
 ---
 
@@ -49,22 +47,26 @@ The candidate CRUD is a full-path feature.
    the `reviewer` subagent when it is large or risky.
 4. The PR, written from the real diff, then CI watched and its failures
    fixed autonomously.
-5. The wait after CI turns green: the automated review lands within
-   minutes, and the triage happens right there, in the same session.
+5. Once CI turns green: nothing fires on its own. The agent tells you the
+   PR is ready and that a review is one command away
+   (`/flux:review`, run locally); ask for it whenever you want one, and
+   the triage happens right there, in the same session, once it lands.
 
 ## What you do
 
-Two moments during the cycle, and only two:
+A few moments during the cycle:
 
 - **Answer the interview** (full path only). Your answers become the
-  acceptance criteria, which the QA agent, the reviewer and the automated
-  PR review all check against later.
-- **Triage the review.** The agent presents each finding with its own
-  assessment, you pick what to address, it fixes the retained items and
-  brings CI back to green.
+  acceptance criteria, which the QA agent, the reviewer and the PR review
+  all check against later.
+- **Ask for a review, when you want one.** Nothing reviews the PR on its
+  own: `/flux:review` runs it, locally, in the session.
+- **Triage the review**, once it lands. The agent presents each finding
+  with its own assessment, you pick what to address, it fixes the
+  retained items and brings CI back to green.
 
-Then you merge. That is the third and last human action, and the only one
-the agent never performs.
+Then you merge. That is the last human action, and the only one the agent
+never performs.
 
 ## What happens after the merge
 
@@ -94,7 +96,7 @@ then writes `specs/SPEC-candidate-management.md` with a frontmatter
 
 You read it, correct it, and validate: the status becomes `validated`.
 The acceptance criteria written here are what the reviewer, the QA agent
-and the automated PR review will all check against later; the spec is the
+and the PR review will all check against later; the spec is the
 contract for the whole cycle.
 
 ## 2. Issue
@@ -130,7 +132,7 @@ step never duplicates anything.
 
 ## 5. Local review: the judgment call
 
-This is the one conditional step. The automated PR review (step 7) will
+This is the one conditional step. The PR review (step 7) will
 analyze the final diff anyway, so a local `reviewer` pass is an
 **optimizer**, not a mandatory stage. Run it when a finding arriving
 *after* the PR would be expensive to fix:
@@ -164,21 +166,20 @@ in conventional-commit form, body built from the actual diff (summary,
 CI (`gh pr checks --watch`) and fixes failures autonomously, capped at
 three attempts on the same error.
 
-## 7. Automated review
+## 7. Review
 
-By default nothing to invoke: the `claude-review` workflow posts one
-sticky comment on the PR covering logic, architecture, security and spec
-conformance. It does not re-check what the gates enforce. It updates in
-place on every push. It never approves.
-
-That "every push" is a real cost, not just a figure of speech: set
-`github.auto_review: false` in `flux-config.yml` to stop it firing
-automatically, and launch it by hand instead, only when a review is
-actually wanted:
+There is no CI job to wait for: the review runs locally, in the session,
+only when asked. Launch it once CI is green and a review is actually
+wanted:
 
 ```
-/flux:gh-review
+/flux:review
 ```
+
+It reads the real diff and posts one summary comment on the PR (updated
+in place on repeated runs) plus inline comments, covering logic,
+architecture, security and spec conformance. It does not re-check what
+the gates enforce. It never approves.
 
 On the pilot feature it found two real issues the gates could not see: a
 missing DB-level unique constraint the spec required, and an update path
@@ -219,6 +220,7 @@ branch (repository setting enabled by `/flux:init`).
 | QA | agent (always when flows exist) | agent |
 | Local review | agent applies the rule above | agent |
 | PR + CI fixes | agent | agent |
+| Request a review | **human** | agent triggers it |
 | Review triage | **human** | agent fixes |
 | Merge | **human** | human |
 | Post-merge lifecycle | nobody (deterministic) | repository workflows |

@@ -47,29 +47,32 @@ user can override the choice at any time.
 2. Watch CI and fix failures autonomously, capped at 3 attempts on the
    same error.
 
-## Step 4: Review triage, in the same session
+## Step 4: Review, on request, then triage
 
-When CI is green, check `github.auto_review` in `flux-config.yml`
-(default `true` when absent):
-- `true`: keep waiting, the automated review lands on the PR within
-  minutes (poll the PR comments).
-- `false`: nothing fires on its own, trigger it yourself first
-  (`gh-review` flow), then wait for it the same way.
+Nothing reviews the PR on its own, and there is no CI job to wait for:
+when CI is green, tell the user the PR is ready and that a review is one
+command away:
 
-When the review lands, run the gh-address-comments flow immediately:
-assess each finding against the code, ask the user what to address in one
-question, fix the retained items, reply on the comments, and bring CI
-back to green.
+```
+/flux:review
+```
 
-The triage is always human, never skipped. If the session ends before the
-review lands, nothing is lost: `/flux:gh-address-comments` handles it
-later.
+If the user asks for it now, run the `review` flow yourself, in this
+session (diff the PR, post the findings as PR comments), and immediately
+run the gh-address-comments flow: assess each finding against the code,
+ask the user what to address in one question, fix the retained items,
+reply on the comments, and bring CI back to green.
+
+The triage is always human, never skipped. If the user does not request a
+review in this session, hand over anyway (step 5): nothing is lost,
+`/flux:review` then `/flux:gh-address-comments` handle it later.
 
 ## Step 5: Hand over
 
-Report the PR URL, CI status and triage outcome. Merging belongs to the
-user. Post-merge lifecycle (spec status flip, index update, branch
-deletion) is automated by the repository workflows, not by you.
+Report the PR URL and CI status, plus the triage outcome if a review
+happened in this session. Merging belongs to the user. Post-merge
+lifecycle (spec status flip, index update, branch deletion) is automated
+by the repository workflows, not by you.
 
 ## Never
 

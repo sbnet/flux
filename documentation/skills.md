@@ -13,10 +13,10 @@ Where each one sits in the cycle:
   └→ [spec-interview → gh-issue]  (full path only; standard: auto-issue;
       trivial: neither)
   └→ implementation + gates → qa / reviewer → gh-pr → CI
-  └→ automated review → triage (human, in-session) → human merge
+  └→ review (/flux:review, run locally, on demand) → triage (human, in-session) → human merge
       └→ post-merge: spec status + branch deletion, automated
 
-init = one-time project setup       geo / ui-review / gh-review = on demand
+init = one-time project setup       geo / ui-review / review = on demand
 ```
 
 ---
@@ -25,8 +25,9 @@ init = one-time project setup       geo / ui-review / gh-review = on demand
 
 **What.** Sets up flux in the current project: detects the stack, writes
 `flux-config.yml`, installs the CI gate script (`.claude/hooks/flux-gate.sh`),
-the GitHub workflows (gates CI + automated review), the `CLAUDE.md`
-workflow contract, the specs index, and the GitHub labels.
+the GitHub workflows (gates CI + spec lifecycle), the `CLAUDE.md`
+workflow contract, the specs index, and the GitHub labels. The PR review
+is not a workflow: `/flux:review` runs locally, nothing to install for it.
 
 **When.** Once per project, right after installing the plugin. Also safe to
 re-run: it refreshes the managed files (e.g. after a plugin update that
@@ -36,15 +37,12 @@ changed `flux-gate.sh`).
 static analysis / types / test / build commands.
 
 **Produces.** `flux-config.yml`, `.claude/hooks/flux-gate.sh`,
-`.github/workflows/{ci,claude-review,spec-lifecycle}.yml`, `CLAUDE.md`,
+`.github/workflows/{ci,spec-lifecycle}.yml`, `CLAUDE.md`,
 `specs/README.md`. Also enables automatic head-branch deletion on the
 repository. The spec-lifecycle workflow flips a merged PR's linked spec to
 `status: implemented` and updates the index, deterministically.
 
-**You still have to.** Create the `CLAUDE_CODE_OAUTH_TOKEN` secret
-(`claude setup-token`, then `gh secret set`; full instructions in the
-[setup guide](setup.md)), and review the inferred commands in
-`flux-config.yml`.
+**You still have to.** Review the inferred commands in `flux-config.yml`.
 
 ```
 /flux:init
@@ -61,8 +59,8 @@ index.
 **When.** At the start of any non-trivial feature, before any code.
 Usually launched by the feature skill on its full path; invoke it directly to
 write a spec without starting the build. The spec's acceptance criteria
-become the contract that `qa`, `reviewer` and the automated PR review all
-check against.
+become the contract that `qa`, `reviewer` and the PR review all check
+against.
 
 **Produces.** `specs/SPEC-<ref>.md` (`<ref>` = issue number or stable
 slug), updated index. On your validation the status moves to `validated`
@@ -98,10 +96,11 @@ the change and announces it: **trivial** (no spec, no issue), **standard**
 (issue auto-generated from your description), **full** (interview → spec →
 auto-issue). Then drives everything: branch → implementation (tests
 included) → gates → local verification (`qa` when there are user flows;
-`reviewer` per the risk rule) → PR → CI watch-and-fix → waits for the
-automated review and runs the triage in the same session. Stops only for
-scope changes, destructive operations, or after 3 failed attempts on one
-error.
+`reviewer` per the risk rule) → PR → CI watch-and-fix. Review is on
+request, never automatic: it tells you how to launch one (`/flux:review`,
+run locally) and runs the triage in the same session if you do. Stops only
+for scope changes, destructive operations, or after 3 failed attempts on
+one error.
 
 **When.** Any "build / fix / implement X" request. This is the standard way
 to work; the other skills remain available standalone. For the full
@@ -119,7 +118,8 @@ without the human triage.
 **What.** Opens the PR for the current branch: conventional-commit title,
 body built from the real diff (summary, `Closes #N`, spec link, test plan,
 review notes), then watches CI and fixes failures autonomously (3-attempt
-cap per error). Ends by pointing you to the automated review for triage.
+cap per error). Ends by pointing you to `/flux:review` for a review
+before the human triage.
 
 **When.** Implementation done and pushed, either invoked by the feature skill
 or standalone if you drove the implementation manually.
@@ -140,29 +140,29 @@ address in one multi-choice question, then fixes the retained items
 autonomously and replies on every comment: addressed (with commit) or
 declined (with your reason).
 
-**When.** Inside a `/flux:feature` session, this flow runs as soon as the
-automated review lands. Invoke it standalone when the review arrived after
-your session ended. Either way the triage itself is **always human**: it
-is the step that gives the merge decision its substance.
+**When.** Inside a `/flux:feature` session, this flow runs as soon as a
+review you requested (`/flux:review`) lands. Invoke it standalone when
+the review arrived after your session ended. Either way the triage itself
+is **always human**: it is the step that gives the merge decision its
+substance.
 
 ```
 /flux:gh-address-comments
 ```
 
-## gh-review
+## review
 
-**What.** Triggers the `claude-review` GitHub workflow by hand
-(`workflow_dispatch`) for the current branch's PR, then watches the run
-and reports its URL. Works whichever way `github.auto_review` is set: it
-is the only way to get a review at all once it is `false`, and a way to
-ask for another pass on top of the automatic one otherwise.
+**What.** Reviews the current branch's PR right in the session (not a
+GitHub Actions job): reads the real diff, then posts the findings as
+comments on the PR, same shape as a human reviewer would leave. Nothing
+reviews a PR on its own, so this is the only way to get one, and also how
+you ask for another pass after further changes.
 
-**When.** `github.auto_review: false` in `flux-config.yml` (the review
-would otherwise run on every push, which costs real usage); or any time
-you want a fresh review without pushing a new commit.
+**When.** Any time a review is wanted: once CI is green and before
+merging, or again after addressing comments.
 
 ```
-/flux:gh-review
+/flux:review
 ```
 
 ## geo
@@ -208,8 +208,9 @@ conformance, never what the gates already enforce. **Conditional by
 design**: run it when a post-PR finding would be expensive: diff spanning
 many files/layers, schema or data migration, sensitive area (auth,
 payments, permissions, files), spec with many criteria. Skip it for small
-contained changes: the automated PR review covers those. Rationale and a
-worked example: [walkthrough](walkthrough.md), part 2 step 5.
+contained changes: the PR review (`/flux:review`) covers those.
+Rationale and a worked example: [walkthrough](walkthrough.md), part 2
+step 5.
 
 ### qa
 

@@ -49,8 +49,9 @@ Spec: `specs/SPEC-<ref>.md`   <!-- if applicable -->
 ## Creation and follow-up
 
 1. `gh pr create --base main --title "…" --body "…" --label <labels>`.
-2. Give the URL to the requester and restate the circuit: green CI + review
-   (automated then human) before merge. Never merge yourself.
+2. Give the URL to the requester and restate the circuit: green CI, then a
+   review on request (`/flux:review`) and its human triage, before
+   merge. Never merge yourself.
 3. On merge: if a spec is linked, set its frontmatter to
    `status: implemented` and update the `specs/README.md` index.
 
@@ -65,9 +66,10 @@ Do not stop at "PR opened". A PR with red CI is not delivered.
    let flux-gate validate locally, push. The checks re-run.
 4. Loop until green. After 3 failed attempts on the same error, stop and
    report the diagnosis to the user instead of thrashing.
-5. When green: if you are driving the full cycle (feature skill), keep
-   waiting for the automated review and chain into the triage flow of
-   `gh-address-comments` in the same session. Standalone, report that the
-   PR is waiting for review and tell the user to read it and run
-   `/gh-address-comments`. Either way the triage itself is human: review
-   comments are never auto-addressed.
+5. When green: nothing reviews the PR on its own, and there is no CI job
+   to wait for. Tell the user the PR is ready and a review is one command
+   away (`/flux:review`, run locally in a session). If you are driving
+   the full cycle (feature skill) and they ask for it now, run that flow
+   and chain into the triage flow of `gh-address-comments` in the same
+   session. Either way the triage itself is human: review comments are
+   never auto-addressed.

@@ -1,7 +1,6 @@
 # Setup guide
 
-What a project needs before `/flux:init`, and the one step the skill
-cannot do for you: the review secret.
+What a project needs before `/flux:init`.
 
 ## Requirements
 
@@ -21,93 +20,20 @@ Two traps worth knowing:
   use (`gh label`, `gh issue delete --yes`). Install from the official
   releases or the GitHub apt repository.
 
-## The review secret
+## Running the review
 
-The automated PR review runs `claude-code-action` inside GitHub Actions.
-That job needs its own credential, because a workflow has no access to
-the session you are authenticated in locally. This is the only manual
-step of the setup, and without it the review workflow fails at
-authentication and no review is ever posted.
-
-Two ways to provide it. Pick one.
-
-### Option A: subscription token (recommended)
-
-Uses your Claude subscription, no extra billing.
-
-```shell
-claude setup-token
-```
-
-The command requires a Claude subscription and prints a long-lived token.
-Copy it, then store it as a repository secret:
-
-```shell
-gh secret set CLAUDE_CODE_OAUTH_TOKEN -R <owner>/<repo>
-```
-
-Paste the token when prompted. This matches the workflow template shipped
-by flux, which reads `secrets.CLAUDE_CODE_OAUTH_TOKEN`.
-
-### Option B: API key
-
-Bills per use on the Claude API, useful if you have no subscription or
-want the review isolated from your personal account.
-
-```shell
-gh secret set ANTHROPIC_API_KEY -R <owner>/<repo>
-```
-
-Then edit `.github/workflows/claude-review.yml` to swap the input:
-
-```yaml
-          # replace
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          # with
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-```
-
-## Verify
-
-```shell
-gh secret list -R <owner>/<repo>
-```
-
-The secret name and its creation date appear; the value is never
-displayed again, by design. The real check is the first PR: the review
-workflow should complete and post a comment within a few minutes.
-
-## Choosing the review model
-
-The action has no dedicated model input. Set it through `claude_args` in
-`claude-review.yml`:
-
-```yaml
-          claude_args: |
-            --model claude-sonnet-5
-            --allowedTools "…"
-```
-
-Pinning the model explicitly is deliberate: without it, the workflow
-follows the CLI default, which changes between versions and silently
-changes how your reviews behave. `claude-sonnet-5` is a good default for
-PR review; a larger model is worth it only for consistently large or
-architecture-heavy diffs.
-
-## Making review optional
-
-`claude-review` runs on every push to a PR by default, which adds up if
-you push often while iterating. Set `auto_review: false` under `github:`
-in `flux-config.yml` to stop it firing automatically; run it by hand
-instead, when a review is actually wanted:
+The PR review is not a GitHub Actions job: it runs locally, in a Claude
+Code session, using the same `gh` authentication as the rest of the
+skills. Nothing reviews a PR on its own, and there is no secret or
+workflow to set up for it. Ask for it with:
 
 ```
-/flux:gh-review
+/flux:review
 ```
 
-Both paths run the same `claude-review.yml`: the `github.auto_review`
-check only gates the automatic `pull_request` trigger. The on-demand
-`workflow_dispatch` trigger always works, whatever the setting.
+for the current branch's PR, whenever a review is actually wanted, before
+merging or again after further changes. It posts its findings as comments
+on the PR, same as any other reviewer would.
 
 ## Staying in sync
 
@@ -115,7 +41,7 @@ Updating the plugin (see the [versioning section of
 CONTRIBUTING.md](../CONTRIBUTING.md#versioning)) changes the marketplace
 clone and, once repaired with `flux-doctor.sh`, which version your session
 runs. It does not touch files `/flux:init` already copied into a project:
-`flux-config.yml`, the three GitHub workflows, `flux-gate.sh`. Those only
+`flux-config.yml`, the two GitHub workflows, `flux-gate.sh`. Those only
 change when `/flux:init` runs again.
 
 So after updating the plugin, re-run `/flux:init` in every project that
@@ -161,18 +87,6 @@ nothing. The doctor prints which shape it found (`list form` or `object
 form`) and repairs in place, without converting one into the other. This is
 a Claude Code behavior flux works around, not a fix to the plugin manager.
 
-**The review workflow fails immediately.** Almost always the secret:
-missing, misnamed, or set on the wrong repository. Compare
-`gh secret list` with the input name in the workflow.
-
-**The review never appears on PRs from forks.** Expected GitHub behavior,
-not a flux issue: secrets are not exposed to workflows triggered by pull
-requests from forks. Branches inside the repository are unaffected.
-
-**The workflow used to work and now fails at authentication.** The token
-was revoked or expired. Run `claude setup-token` again and re-set the
-secret; nothing else needs to change.
-
 **A job hangs then fails with "not acquired by Runner".** A GitHub
 Actions infrastructure problem, unrelated to your configuration. Check
 [githubstatus.com](https://www.githubstatus.com/) and re-run the job.
@@ -180,7 +94,6 @@ Actions infrastructure problem, unrelated to your configuration. Check
 ## What `/flux:init` handles for you
 
 Everything else: `flux-config.yml` with the commands detected from your
-stack, the gate script for CI runners, the three workflows, the
+stack, the gate script for CI runners, the two workflows, the
 `CLAUDE.md` contract, the specs index, the GitHub labels, and automatic
-deletion of merged branches. It also tells you if the review secret is
-still missing.
+deletion of merged branches.

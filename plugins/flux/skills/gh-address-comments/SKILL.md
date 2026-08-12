@@ -47,6 +47,7 @@ skill until green.
 
 1. Reply briefly on each addressed comment (what was done, commit sha) and
    on declined ones (why not, per the triage decision).
-2. Report: what was fixed, what was declined and why, CI status. The PR is
-   back to waiting for review. The automated review re-runs on the new push;
-   merging stays with the human.
+2. Report: what was fixed, what was declined and why, CI status. Nothing
+   re-reviews on its own: run `/flux:review` again for a fresh pass on
+   the new commits if one is wanted before merge, which stays with the
+   human either way.
