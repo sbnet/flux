@@ -16,7 +16,7 @@ Where each one sits in the cycle:
   └→ review (/flux:review, run locally, on demand) → triage (human, in-session) → human merge
       └→ post-merge: spec status + branch deletion, automated
 
-init = one-time project setup       geo / ui-review / review = on demand
+init = one-time project setup       review = on demand
 ```
 
 ---
@@ -164,41 +164,6 @@ merging, or again after addressing comments.
 
 ```
 /flux:review
-```
-
-## geo
-
-**What.** Audits and improves visibility in generative engines (AI answers,
-LLM-powered search), in strict order: renderability (what a no-JS crawler
-sees; an SPA shell is invisible), machine surface (`llms.txt`, robots
-rules for AI crawlers, server-side JSON-LD), then content citability
-(self-contained answers, question-phrased headings, dated facts).
-
-**When.** The project has public pages and you care about being cited by
-AI assistants. Complementary to a classic SEO pass: meta, sitemap and
-Core Web Vitals are not its job.
-
-```
-/flux:geo audit the public pages
-```
-
-## ui-review
-
-**What.** Reviews the interface as a user experiences it: drives the
-running app with playwright-cli, then checks form ergonomics, pattern
-consistency, and flow friction against the spec. Report ordered blocking >
-confusing > polish. Two depths: **quick** (default) screenshots each page
-at 1440 and 375, normal state only; **deep** (ask for it, e.g. "deep
-review", or when quick turns up something breakpoint/state-specific) adds
-768 and the full state matrix (empty / loading / error / overflow).
-
-**When.** A feature's UI is functional and you want a design pass; before
-a demo; or periodically on the main flows. Complementary to the
-accessibility skill (full WCAG) and frontend-design (building new UI).
-
-```
-/flux:ui-review the candidates pages
-/flux:ui-review deep review of the candidates pages
 ```
 
 ---
