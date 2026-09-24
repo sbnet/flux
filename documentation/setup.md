@@ -8,6 +8,7 @@ What a project needs before `/flux:init`.
 |---|---|---|---|
 | `yq` | v4 (mikefarah) | the gate hook, to read `flux-config.yml` | `yq --version` |
 | `gh` | 2.20 or later, authenticated | the issue, PR and review skills | `gh auth status` |
+| `playwright-cli` | any (optional) | the `qa` agent, for flows that need a real browser (forms, redirects, JS) | `playwright-cli --version` |
 
 Two traps worth knowing:
 

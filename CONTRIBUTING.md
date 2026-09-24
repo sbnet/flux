@@ -26,6 +26,12 @@ machinery, check whether a hook, a skill, branch protection or a workflow
 already does the job. See the
 [scoping study](documentation/study-01-scoping.md).
 
+Scope rule: a skill or agent ships in the plugin only if the flux cycle
+invokes it or it sets flux up. Useful but standalone skills (SEO, UI
+review, framework know-how) belong in a user's own `~/.claude/skills/` or
+in a separate plugin, not here: every skill the plugin ships is loaded in
+every project that installs it.
+
 ## Development setup
 
 ```shell
