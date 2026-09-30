@@ -168,6 +168,7 @@ Full reference with usage, triggers and examples:
 | [gh-pr](documentation/skills.md#gh-pr) | PR from the actual diff + CI watch-and-fix loop |
 | [review](documentation/skills.md#review) | run the PR review locally, on demand |
 | [gh-address-comments](documentation/skills.md#gh-address-comments) | review comments: human triage, autonomous fixes |
+| [duke](documentation/skills.md#duke) | opt-in unattended mode: chains issues through review and merge, stops at the first doubt |
 
 Four subagents complete the toolkit:
 [reviewer](documentation/skills.md#reviewer) (conditional pre-PR review),

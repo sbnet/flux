@@ -77,4 +77,6 @@ by the repository workflows, not by you.
 ## Never
 
 Merge, approve, bypass a gate, or address review comments without the
-triage.
+triage. Chaining issues with automatic triage and merge is the `duke`
+skill's job, and only after the user invokes `/flux:duke` and confirms;
+never slide into it from here.

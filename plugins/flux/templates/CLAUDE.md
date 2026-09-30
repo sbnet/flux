@@ -12,7 +12,9 @@ hooks enforce them on edits and pushes.
   failures until green. The `feature` skill describes the full cycle.
 - **The only human step is merging the PR.** Never merge; never approve
   reviews. Everything else, including fixing red CI on an open PR, is
-  yours to carry without asking.
+  yours to carry without asking. The single exception is a duke session
+  the user started with `/flux:duke` and confirmed by typing the phrase;
+  it ends with the session.
 - **Never bypass a gate.** No `--no-verify`, no weakening a test or a
   config to get to green. If a gate blocks, fix the cause.
 - Ask only for: scope changes not covered by the spec, destructive
@@ -20,7 +22,8 @@ hooks enforce them on edits and pushes.
 - **Review comments are triaged by the human, never auto-addressed.**
   When a review lands on a PR, present the findings with your own
   assessment (gh-address-comments flow, in-session when you drove the
-  cycle); the user picks, you fix what was retained.
+  cycle); the user picks, you fix what was retained. Only a confirmed
+  duke session triages on its own.
 
 ## Conventions
 

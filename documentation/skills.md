@@ -4,7 +4,8 @@ Every skill is invocable as `/flux:<name>` once the plugin is installed.
 Claude also invokes them on its own when the conversation matches their
 purpose; the "When" sections below describe both triggers. Agents are not
 invoked directly: Claude launches them as subagents when their conditions
-apply, or when you ask.
+apply, or when you ask. Exception: `duke` is user-invoked only, Claude
+never starts it on its own.
 
 Where each one sits in the cycle:
 
@@ -17,6 +18,7 @@ Where each one sits in the cycle:
       └→ post-merge: spec status + branch deletion, automated
 
 init = one-time project setup       review = on demand
+duke = opt-in, chains the whole cycle over the backlog, merge included
 ```
 
 ---
@@ -164,6 +166,42 @@ merging, or again after addressing comments.
 
 ```
 /flux:review
+```
+
+## duke
+
+**What.** Unattended mode over a fully written backlog. For each open
+flux issue, in ascending order: branch, implementation, gates, PR, CI,
+review, **automatic** triage (every comment gets a reply: fixed or
+dismissed with a reason), then **merge**, then the next issue. It is the
+only place where flux merges and triages without you, so it is guarded:
+
+- entry checks: clean default branch, no open `feat/*`/`fix/*` PR, CI
+  configured, every flux issue has acceptance criteria and, when
+  non-trivial, a validated spec. Any failure refuses entry and lists what
+  is missing;
+- a plan, then you type exactly `I am the duke`. Anything else cancels;
+- a merge guard per PR: CI green, no blocking finding left, every
+  acceptance criterion verified, nothing under `duke.sensitive_paths`
+  (nor migrations, auth, payments, data deletion by judgment).
+
+The first failed guard, 3 failed attempts on one error, a merge conflict
+or a scope ambiguity **stops the whole session**: the PR stays open with
+a comment explaining why, and you get a report. The mode never survives
+the session.
+
+The skill sets `disable-model-invocation`, so only you can start it by
+typing the command.
+
+**Reads.** `flux-config.yml` (`github.labels`, `duke.max_issues`,
+`duke.merge_method`, `duke.sensitive_paths`), the issues and their specs.
+
+**Never does.** Enter without the typed phrase, skip a failing issue,
+approve, merge with `--admin`, bypass a gate.
+
+```
+/flux:duke
+/flux:duke 3
 ```
 
 ---
