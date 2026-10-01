@@ -1,7 +1,7 @@
 ---
 title: Duke mode
 ref: duke-mode
-status: validated
+status: implemented
 issue: "#8"
 date: 2026-09-30
 ---
