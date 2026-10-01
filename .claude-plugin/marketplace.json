@@ -10,7 +10,7 @@
     {
       "name": "flux",
       "source": "./plugins/flux",
-      "description": "Quasi-autonomous development workflow: config-driven quality gates, spec → issue → PR cycle, on-demand review with human merge",
+      "description": "Quasi-autonomous development workflow: config-driven quality gates, spec → issue → PR cycle, on-demand review with human merge, opt-in unattended duke mode",
       "version": "0.11.0"
     }
   ]

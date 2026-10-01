@@ -172,8 +172,8 @@ merging, or again after addressing comments.
 
 **What.** Unattended mode over a fully written backlog. For each open
 flux issue, in ascending order: branch, implementation, gates, PR, CI,
-review, **automatic** triage (every comment gets a reply: fixed or
-dismissed with a reason), then **merge**, then the next issue. It is the
+review, **automatic** triage (only duke's own and collaborators'
+comments; every comment gets a reply: fixed or dismissed with a reason), then **merge**, then the next issue. It is the
 only place where flux merges and triages without you, so it is guarded:
 
 - entry checks: clean default branch, no open `feat/*`/`fix/*` PR, CI
@@ -183,7 +183,8 @@ only place where flux merges and triages without you, so it is guarded:
 - a plan, then you type exactly `I am the duke`. Anything else cancels;
 - a merge guard per PR: CI green, no blocking finding left, every
   acceptance criterion verified, nothing under `duke.sensitive_paths`
-  (nor migrations, auth, payments, data deletion by judgment).
+  (nor migrations, auth, payments, data deletion by judgment). A
+  configured list extends the built-in one; matching ignores case.
 
 The first failed guard, 3 failed attempts on one error, a merge conflict
 or a scope ambiguity **stops the whole session**: the PR stays open with
