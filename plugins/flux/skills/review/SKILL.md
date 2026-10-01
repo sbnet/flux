@@ -39,7 +39,9 @@ context, not this session's.
    ```
    Otherwise create it: `gh pr comment <number> --body "<!-- flux-review -->
    …"`.
-2. **Inline comments**, one per finding tied to a specific line:
+2. **Inline comments**, one per finding tied to a specific line. Start
+   each body with the severity in brackets (`[blocking]`, `[confusing]`,
+   `[polish]`) so it survives into the triage:
    ```shell
    gh api repos/{owner}/{repo}/pulls/<number>/comments \
      -f body="…" -f commit_id="<headRefOid>" -f path="<file>" \
@@ -47,7 +49,8 @@ context, not this session's.
    ```
 3. Never approve the PR, never submit the review as a chat message
    instead of a comment: the comments on the PR are the deliverable.
-   Merging stays with the human.
+   Merging stays with the human, except inside a confirmed `duke`
+   session.
 
 Report the comment URLs to the user, then continue with
 `/flux:gh-address-comments` for the triage.

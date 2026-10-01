@@ -28,7 +28,8 @@ one-line summary and the assessment (agree/disagree/unclear, with why).
 Then ask the user in ONE question (multiSelect) which findings to address.
 Recommend a default selection based on the subagent's assessment. Do not
 start fixing anything before this triage, even findings you are sure
-about.
+about. The only exception is a confirmed `duke` session, which applies
+its own triage rules instead of asking.
 
 ## Step 3: Fix (autonomous)
 

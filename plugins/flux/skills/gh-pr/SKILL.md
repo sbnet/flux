@@ -51,7 +51,8 @@ Spec: `specs/SPEC-<ref>.md`   <!-- if applicable -->
 1. `gh pr create --base main --title "…" --body "…" --label <labels>`.
 2. Give the URL to the requester and restate the circuit: green CI, then a
    review on request (`/flux:review`) and its human triage, before
-   merge. Never merge yourself.
+   merge. Never merge yourself (the only exception is a confirmed
+   `duke` session, which merges under its own guard).
 3. On merge: if a spec is linked, set its frontmatter to
    `status: implemented` and update the `specs/README.md` index.
 

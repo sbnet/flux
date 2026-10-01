@@ -28,3 +28,12 @@ specs:
 
 github:
   labels: [flux]          # default labels for gh-issue / gh-pr
+
+duke:                     # duke skill: unattended backlog mode (all keys optional)
+  max_issues: 5           # issues per session; /flux:duke <n> overrides
+  merge_method: squash    # squash | merge | rebase
+  sensitive_paths:        # a PR touching any of these is never auto-merged;
+    - "database/migrations/**"  # this list extends the built-in defaults
+    - "**/auth/**"              # (shown here), it never replaces them;
+    - "**/*payment*"            # matching is case-insensitive
+    - "**/fortify/**"

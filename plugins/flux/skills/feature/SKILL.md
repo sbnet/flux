@@ -1,6 +1,6 @@
 ---
 name: feature
-description: The single entry point to build anything. Calibrates the process to the change (trivial, standard or full), then drives it end to end (spec, issue, implementation, gates, PR, CI, review triage). Only merging stays human. Use when the user asks to implement, fix or build something.
+description: The single entry point to build anything. Calibrates the process to the change (trivial, standard or full), then drives it end to end (spec, issue, implementation, gates, PR, CI, review triage). Only merging stays human, outside the opt-in duke mode. Use when the user asks to implement, fix or build something.
 ---
 
 # Skill: feature
@@ -77,4 +77,6 @@ by the repository workflows, not by you.
 ## Never
 
 Merge, approve, bypass a gate, or address review comments without the
-triage.
+triage. Chaining issues with automatic triage and merge is the `duke`
+skill's job, and only after the user invokes `/flux:duke` and confirms;
+never slide into it from here.
