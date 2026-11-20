@@ -9,7 +9,11 @@ project:
 forge: github             # v1: github only; gitea/forgejo considered for v2
 
 commands:                 # commands run by the hooks, one line each
+                          # {file}: the edited file, shell-quoted (edit
+                          # event only; a command using it is skipped on
+                          # push/ci/stop)
   lint: "vendor/bin/pint --test"          # check only, does not modify
+  lint_file: "case {file} in *.php) vendor/bin/pint --test {file} ;; esac"  # edited file only
   lint_fix: "vendor/bin/pint"             # fixing variant (optional)
   static: "vendor/bin/phpstan analyse --no-progress --memory-limit=1G"
   types: "npm run types:check"
@@ -19,7 +23,7 @@ commands:                 # commands run by the hooks, one line each
   build: "npm run build"
 
 gates:                    # which steps block which event
-  on_edit: [lint]         # PostToolUse (Edit/Write), must stay fast
+  on_edit: [lint_file]    # PostToolUse (Edit/Write), must stay fast
   on_push: [lint, static, types, lint_front, format_front, test]  # PreToolUse on `git push`
   on_stop: []             # Stop hook, empty in v1
 

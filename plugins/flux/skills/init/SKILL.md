@@ -20,7 +20,9 @@ live in `<plugin root>/templates/`.
    are available. Install or tell the user how before continuing.
 2. **Detect the stack.** Look at the project (composer.json, package.json,
    pyproject.toml…) and derive the real commands for lint / static analysis /
-   types / tests / build.
+   types / tests / build. For `on_edit`, derive a per-file variant of the
+   linter through the `{file}` placeholder, restricted to the extensions it
+   handles (see `lint_file` in the template).
 3. **`flux-config.yml`** at the project root. If it does not exist yet,
    create it from `templates/flux-config.yml` with the detected commands,
    asking the user only if a command cannot be inferred. If it already
