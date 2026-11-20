@@ -170,13 +170,13 @@ Full reference with usage, triggers and examples:
 | [gh-address-comments](documentation/skills.md#gh-address-comments) | review comments: human triage, autonomous fixes |
 | [duke](documentation/skills.md#duke) | opt-in unattended mode: chains issues through review and merge, stops at the first doubt |
 
-Four subagents complete the toolkit:
-[reviewer](documentation/skills.md#reviewer) (conditional pre-PR review),
+Three subagents complete the toolkit:
+[reviewer](documentation/skills.md#reviewer) (reviews a diff: the local
+branch before a PR when it is risky, or the PR behind `review`),
 [qa](documentation/skills.md#qa) (runs the app, walks the spec's flows,
 quick by default, deep on request), and
-[pr-review](documentation/skills.md#pr-review) /
-[comment-triage](documentation/skills.md#comment-triage), which do the
-heavy reading behind `review` and `gh-address-comments`.
+[comment-triage](documentation/skills.md#comment-triage), which does the
+heavy reading behind `gh-address-comments`.
 
 Day to day, one command covers the whole contribution cycle:
 `/flux:feature <what you want>` calibrates the ceremony to the change

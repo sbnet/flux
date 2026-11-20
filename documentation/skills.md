@@ -155,7 +155,7 @@ substance.
 ## review
 
 **What.** Reviews the current branch's PR (not a GitHub Actions job): the
-`pr-review` subagent reads the real diff and the surrounding code, then
+`reviewer` subagent reads the real PR diff and the surrounding code, then
 the findings get posted as comments on the PR, same shape as a human
 reviewer would leave. Nothing reviews a PR on its own, so this is the only
 way to get one, and also how you ask for another pass after further
@@ -211,14 +211,21 @@ approve, merge with `--admin`, bypass a gate.
 
 ### reviewer
 
-Pre-PR review of the branch diff: logic, architecture, security, spec
-conformance, never what the gates already enforce. **Conditional by
-design**: run it when a post-PR finding would be expensive: diff spanning
-many files/layers, schema or data migration, sensitive area (auth,
-payments, permissions, files), spec with many criteria. Skip it for small
-contained changes: the PR review (`/flux:review`) covers those.
-Rationale and a worked example: [walkthrough](walkthrough.md), part 2
-step 5.
+Reviews a diff: logic, architecture, security, spec conformance, never
+what the gates already enforce. One agent, two uses: the caller states
+the diff source (the open PR via `gh pr diff`, or the local branch via
+`git diff <default-branch>...HEAD`) and the spec, and gets the same
+structured findings (file, line, blocking/confusing/polish, failure
+scenario) either way.
+
+- **PR review**: launched by `/flux:review` (and duke), whose findings get
+  posted as PR comments.
+- **Local pre-PR review**: **conditional by design**: run it when a
+  post-PR finding would be expensive: diff spanning many files/layers,
+  schema or data migration, sensitive area (auth, payments, permissions,
+  files), spec with many criteria. Skip it for small contained changes: the PR review (`/flux:review`) covers those.
+  Rationale and a worked example: [walkthrough](walkthrough.md), part 2
+  step 5.
 
 ### qa
 
@@ -231,12 +238,6 @@ the happy path only; **deep** also probes unhappy paths (invalid input,
 missing auth, empty states, double submission), triggered by asking for
 it or when the flow touches auth, payments, permissions, or a mutation
 with no automated coverage for its unhappy path.
-
-### pr-review
-
-Reads an open PR's diff and the surrounding code, and reports findings
-(logic, architecture, security, spec conformance) for the `review` skill
-to post as PR comments. Launched by `/flux:review`; not invoked directly.
 
 ### comment-triage
 

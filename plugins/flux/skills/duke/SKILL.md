@@ -94,14 +94,15 @@ without asking for confirmation and without modifying anything.
 2. Implement with tests, as in the `feature` skill step 2. A red gate is
    the fix loop, never something to bypass.
 3. Local verification: the `qa` subagent when the issue has observable
-   user flows; the `reviewer` subagent per the usual risk rule.
+   user flows; the `reviewer` subagent on the local branch per the usual
+   risk rule.
 4. Conventional commits, `git push -u origin HEAD`, open the PR with the
    gh-pr conventions (`Closes #N`, spec link). The test plan lists every
    acceptance criterion of the issue as a `- [ ]` checkbox; the issue's
    criteria are authoritative, the spec's add to them only where the
    issue points to it.
 5. Watch CI and fix failures, capped at 3 attempts on the same error.
-6. Review: run the `pr-review` subagent and post its findings as in the
+6. Review: run the `reviewer` subagent on the PR and post its findings as in the
    `review` skill. Keep its findings list for this PR, each mapped to the
    id of the comment it was posted as, with its severity.
 7. Automatic triage: run the `comment-triage` subagent, with the script
