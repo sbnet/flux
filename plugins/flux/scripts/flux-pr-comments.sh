@@ -4,15 +4,18 @@
 # Usage: flux-pr-comments.sh <pr-number>
 #
 # Prints one JSON object per line on stdout:
-#   {"kind":"thread", path, line, outdated, commit, comments:[{id,author,body}]}
-#     an unresolved review thread (resolved ones are omitted); `commit` is
-#     the commit the first comment was posted on, `id` the numeric REST id
-#     to reply to;
+#   {"kind":"thread", id, path, line, start_line, outdated, commit,
+#    comments:[{id,author,body}]}
+#     an unresolved review thread (resolved ones are omitted). `id` is the
+#     numeric REST id of its first comment, the one to reply to; `line`
+#     falls back to the original line when the thread is outdated;
+#     `commit` is the commit the first comment was posted on;
 #   {"kind":"comment", id, author, created, body}
-#     a top-level PR comment (the <!-- flux-review --> summary is excluded);
+#     a top-level PR comment; flux's own summary (a body starting with
+#     <!-- flux-review --> posted by the current gh user) is excluded;
 #   {"kind":"review", id, author, state, submitted, body}
-#     a submitted review with a non-empty body.
-# Notes (omitted resolved threads, fetch limits hit) go to stderr.
+#     a submitted, non-dismissed review with a non-empty body.
+# Notes on fetch limits reached go to stderr.
 # Dependency: gh (authenticated), run from inside the repository.
 
 set -euo pipefail
@@ -27,12 +30,13 @@ threads=100 per_thread=50 comments=100 reviews=100
 
 # shellcheck disable=SC2016  # $-names are GraphQL variables, not shell
 query='query($owner:String!, $repo:String!, $pr:Int!, $threads:Int!, $per_thread:Int!, $comments:Int!, $reviews:Int!) {
+  viewer { login }
   repository(owner:$owner, name:$repo) {
     pullRequest(number:$pr) {
       reviewThreads(first:$threads) {
         pageInfo { hasNextPage }
         nodes {
-          isResolved isOutdated path line
+          isResolved isOutdated path line originalLine startLine originalStartLine
           comments(first:$per_thread) {
             totalCount
             nodes { databaseId author { login } body originalCommit { oid } }
@@ -53,20 +57,24 @@ query='query($owner:String!, $repo:String!, $pr:Int!, $threads:Int!, $per_thread
 
 # Records are objects; notes are plain strings prefixed with "NOTE:".
 # shellcheck disable=SC2016  # jq program, not shell
-filter='.data.repository.pullRequest as $p
+filter='.data.viewer.login as $me
+| .data.repository.pullRequest as $p
 | ($p.reviewThreads.nodes[] | select(.isResolved | not)
-   | {kind: "thread", path, line, outdated: .isOutdated,
+   | {kind: "thread", id: (.comments.nodes[0].databaseId // null), path,
+      line: (.line // .originalLine),
+      start_line: (.startLine // .originalStartLine),
+      outdated: .isOutdated,
       commit: (.comments.nodes[0].originalCommit.oid // null),
       comments: [.comments.nodes[]
                  | {id: .databaseId, author: (.author.login // "ghost"), body}]}),
-  ($p.comments.nodes[] | select(.body | contains("<!-- flux-review") | not)
+  ($p.comments.nodes[]
+   | select(((.body | startswith("<!-- flux-review -->")) and .author.login == $me) | not)
    | {kind: "comment", id: .databaseId, author: (.author.login // "ghost"),
       created: .createdAt, body}),
-  ($p.reviews.nodes[] | select(.body != "")
+  ($p.reviews.nodes[]
+   | select(.body != "" and .state != "PENDING" and .state != "DISMISSED")
    | {kind: "review", id: .databaseId, author: (.author.login // "ghost"),
       state, submitted: .submittedAt, body}),
-  ([$p.reviewThreads.nodes[] | select(.isResolved)] | length
-   | select(. > 0) | "NOTE: \(.) resolved thread(s) omitted"),
   (select($p.reviewThreads.pageInfo.hasNextPage)
    | "NOTE: limit reached, only the first \($threads) review threads are listed"),
   ($p.reviewThreads.nodes[] | select(.comments.totalCount > $per_thread)

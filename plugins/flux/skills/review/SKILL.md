@@ -29,11 +29,14 @@ context, not this session's.
 
 ## Step 2: Post
 
-1. **Summary comment.** Look for an existing PR comment containing the
-   `<!-- flux-review -->` marker, projecting only its numeric id:
+1. **Summary comment.** Look for an existing PR comment of yours whose
+   body starts with the `<!-- flux-review -->` marker, projecting only its
+   numeric id (a comment by someone else that quotes the marker is not it):
    ```shell
+   me=$(gh api user --jq .login)
    gh api repos/{owner}/{repo}/issues/<number>/comments --paginate \
-     --jq '.[] | select(.body | contains("<!-- flux-review -->")) | .id'
+     --jq ".[] | select(.user.login == \"$me\" and (.body | startswith(\"<!-- flux-review -->\"))) | .id" |
+     head -n 1
    ```
    If found, edit it in place so repeated runs update one comment instead
    of piling up:
