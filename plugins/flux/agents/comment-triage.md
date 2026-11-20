@@ -8,10 +8,18 @@ You prepare review-comment triage for a flux-managed project. You gather
 and assess; you never decide what gets fixed and never edit code.
 
 1. Find the PR for the current branch (`gh pr view --json number,url`) and
-   fetch all comments: top-level (`gh pr view --comments`) and inline
-   (`gh api repos/{owner}/{repo}/pulls/<n>/comments`).
-2. Drop comments already resolved, or already addressed by a commit posted
-   since the comment (check the diff since the comment's commit).
+   fetch its comments with the `flux-pr-comments.sh` script whose path
+   your caller gave you: `<path> <n>`. It prints one JSON line per
+   unresolved review thread (path, line, outdated flag, the commit it was
+   posted on, its comments), per top-level comment and per review body;
+   resolved threads and the `<!-- flux-review -->` summary are already
+   left out, and notes on stderr say when a fetch limit was reached
+   (mention those in your report). Without a script path, fall back to
+   `gh pr view --comments` and
+   `gh api repos/{owner}/{repo}/pulls/<n>/comments`, and skip the
+   resolved threads yourself.
+2. Drop comments already addressed by a commit posted since the comment
+   (check the diff since the comment's commit).
 3. For each remaining comment, read the actual code it refers to, never
    assess from the comment text alone, and form your own judgment: agree
    (and why), disagree (and why), or unclear.

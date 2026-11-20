@@ -13,7 +13,9 @@ the execution is autonomous.
 
 ## Step 1: Collect and assess
 
-Run the `comment-triage` subagent for the current branch's PR. It fetches
+Run the `comment-triage` subagent for the current branch's PR, giving it
+the path of `<plugin root>/scripts/flux-pr-comments.sh` (the plugin root
+is two levels up from this skill's base directory). It fetches
 top-level and inline comments, drops what's already resolved or addressed
 by a later commit, and reads the actual code behind each remaining one to
 form its own assessment. That reading is the expensive part; it happens in

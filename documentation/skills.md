@@ -240,7 +240,9 @@ to post as PR comments. Launched by `/flux:review`; not invoked directly.
 
 ### comment-triage
 
-Collects a PR's review comments, drops what's already resolved or
-addressed, and assesses each remaining one against the actual code
+Collects a PR's review comments through `scripts/flux-pr-comments.sh`
+(compact JSON lines: unresolved threads with their resolution state from
+GitHub, top-level comments, review bodies), drops what's already addressed,
+and assesses each remaining one against the actual code
 (agree/disagree/unclear, with why). Launched by `/flux:gh-address-comments`
 to prepare the human triage; not invoked directly.

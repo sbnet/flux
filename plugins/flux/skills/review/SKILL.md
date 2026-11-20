@@ -30,7 +30,11 @@ context, not this session's.
 ## Step 2: Post
 
 1. **Summary comment.** Look for an existing PR comment containing the
-   `<!-- flux-review -->` marker (`gh pr view <number> --json comments`).
+   `<!-- flux-review -->` marker, projecting only its numeric id:
+   ```shell
+   gh api repos/{owner}/{repo}/issues/<number>/comments --paginate \
+     --jq '.[] | select(.body | contains("<!-- flux-review -->")) | .id'
+   ```
    If found, edit it in place so repeated runs update one comment instead
    of piling up:
    ```shell
