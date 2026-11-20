@@ -7,6 +7,11 @@
 #   stop  → gates.on_stop   (Stop)
 #   ci    → gates.on_push   (direct call from CI, no stdin)
 #
+# A gate command may contain the {file} placeholder: on the edit event it
+# is replaced by the edited file (tool_input.file_path, shell-quoted), so
+# the gate checks only that file. When no file is known (push, ci, stop),
+# a command containing {file} is skipped.
+#
 # Exit 0: everything green (or nothing to do). Exit 2: at least one gate
 # failed; Claude Code blocks the action and receives the report on stderr.
 # Dependency: yq v4 (mikefarah).
@@ -21,7 +26,11 @@ config="flux-config.yml"
 command -v yq >/dev/null || { echo "[flux-gate] yq not found" >&2; exit 0; }
 
 gate_key="$event"
-if [ "$event" = "push" ]; then
+file=""
+if [ "$event" = "edit" ]; then
+  input="$(cat 2>/dev/null || true)"
+  file=$(printf '%s' "$input" | yq -p json -r '.tool_input.file_path // ""' 2>/dev/null || true)
+elif [ "$event" = "push" ]; then
   # Only trigger when the intercepted Bash command is a `git push`.
   input="$(cat 2>/dev/null || true)"
   cmd_str=$(printf '%s' "$input" | yq -p json -r '.tool_input.command // ""' 2>/dev/null || true)
@@ -45,6 +54,13 @@ for gate in "${gates[@]}"; do
     failed=1
     continue
   fi
+  case "$cmd" in
+    *"{file}"*)
+      [ -n "$file" ] || continue
+      quoted=$(printf '%q' "$file")
+      cmd=${cmd//"{file}"/"$quoted"}
+      ;;
+  esac
   out=$(eval "$cmd" 2>&1)
   rc=$?
   if [ $rc -ne 0 ]; then

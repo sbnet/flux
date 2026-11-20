@@ -114,8 +114,9 @@ issue number into the spec's frontmatter (`issue: "#2"`).
 Work happens on `feat/candidate-management-crud`. While the agent edits,
 the plugin's hooks run the gates from `flux-config.yml`:
 
-- after each edit: `on_edit` gates (lint); a violation blocks the edit
-  loop and feeds the report back to the agent, which fixes it;
+- after each edit: `on_edit` gates (lint of the edited file, through the
+  `{file}` placeholder); a violation blocks the edit loop and feeds the
+  report back to the agent, which fixes it;
 - on `git push`: `on_push` gates (lint, static analysis, types, frontend
   lint/format, tests); a red gate blocks the push itself.
 

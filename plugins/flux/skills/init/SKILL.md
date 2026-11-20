@@ -20,14 +20,19 @@ live in `<plugin root>/templates/`.
    are available. Install or tell the user how before continuing.
 2. **Detect the stack.** Look at the project (composer.json, package.json,
    pyproject.toml…) and derive the real commands for lint / static analysis /
-   types / tests / build.
+   types / tests / build. For `on_edit`, derive a per-file variant of the
+   linter through the `{file}` placeholder, restricted to the extensions it
+   handles (see `lint_file` in the template).
 3. **`flux-config.yml`** at the project root. If it does not exist yet,
    create it from `templates/flux-config.yml` with the detected commands,
    asking the user only if a command cannot be inferred. If it already
    exists, do NOT regenerate it: diff its keys against the current
    template and add only the ones missing (new schema keys from a plugin
    update), at the template's default. Never touch a key already present,
-   that is the user's customization to keep.
+   that is the user's customization to keep. Then, if `gates.on_edit`
+   still runs a whole-project command while a `{file}` variant now exists
+   in `commands` (e.g. `on_edit: [lint]` next to `lint_file`), tell the
+   user they can switch `on_edit` to it; do not switch it yourself.
 4. **Gate script for CI.** Copy `<plugin root>/hooks/flux-gate.sh` to
    `.claude/hooks/flux-gate.sh` (chmod +x), overwriting unconditionally:
    this file is not meant to be hand-edited, so there is nothing local to
