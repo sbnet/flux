@@ -104,8 +104,8 @@ without asking for confirmation and without modifying anything.
 6. Review: run the `pr-review` subagent and post its findings as in the
    `review` skill. Keep its findings list for this PR, each mapped to the
    id of the comment it was posted as, with its severity.
-7. Automatic triage: run the `comment-triage` subagent, then act on its
-   assessments:
+7. Automatic triage: run the `comment-triage` subagent, with the script
+   path as in gh-address-comments step 1, then act on its assessments:
    - Only act on duke's own review comments and on comments by
      repository collaborators (`gh api repos/{owner}/{repo}/collaborators/<login>`
      returns 204). Any other open comment stops duke.

@@ -13,9 +13,13 @@ the execution is autonomous.
 
 ## Step 1: Collect and assess
 
-Run the `comment-triage` subagent for the current branch's PR. It fetches
-top-level and inline comments, drops what's already resolved or addressed
-by a later commit, and reads the actual code behind each remaining one to
+Run the `comment-triage` subagent for the current branch's PR, giving it
+the absolute path of `<plugin root>/scripts/flux-pr-comments.sh`. The
+plugin root is two levels up from this skill's base directory: a base
+directory `<root>/skills/gh-address-comments` gives
+`<root>/scripts/flux-pr-comments.sh`. The script fetches the open
+comments (resolved threads are already left out); the subagent drops
+what a later commit has addressed, and reads the actual code behind each remaining one to
 form its own assessment. That reading is the expensive part; it happens in
 the subagent's own context, not this session's. It returns a compact list:
 comment, assessment, recommended keep/drop.
