@@ -22,8 +22,10 @@ actually wanted, typically once CI is green and before merging.
 
 ## Step 1: Review
 
-Run the `pr-review` subagent on this PR. It reads the diff and the
-surrounding code and returns a compact findings list; that reading is
+Run the `reviewer` subagent on this PR: tell it the PR number (diff
+source `gh pr diff <number>`) and the spec the PR links, if any. It reads
+the diff and the surrounding code and returns a compact findings list;
+that reading is
 where the bulk of the token cost sits, so it happens in the subagent's own
 context, not this session's.
 

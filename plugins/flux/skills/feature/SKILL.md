@@ -34,7 +34,8 @@ user can override the choice at any time.
    and on push; a red gate is the normal fix loop, never something to
    bypass.
 3. Local verification: run the `qa` subagent whenever the change has
-   observable user flows. Run the `reviewer` subagent per the risk rule
+   observable user flows. Run the `reviewer` subagent on the local branch
+   (`git diff <default-branch>...HEAD`, plus the spec ref) per the risk rule
    (diff spanning many files or layers, schema or data migration,
    sensitive area, spec with many criteria); skip it for small contained
    changes. Rationale: `documentation/walkthrough.md`, part 2 step 5.
@@ -57,8 +58,9 @@ command away:
 /flux:review
 ```
 
-If the user asks for it now, run the `review` flow (diff the PR via the
-`pr-review` subagent, post the findings as PR comments), and immediately
+If the user asks for it now, run the `review` skill's flow as written
+(it passes the PR number and spec to the `reviewer` subagent and posts
+the findings as PR comments), and immediately
 run the gh-address-comments flow: the `comment-triage` subagent assesses
 each finding, you ask the user what to address in one question, fix the
 retained items, reply on the comments, and bring CI back to green.
