@@ -11,7 +11,7 @@
       "name": "flux",
       "source": "./plugins/flux",
       "description": "Quasi-autonomous development workflow: config-driven quality gates, spec → issue → PR cycle, on-demand review with human merge, opt-in unattended duke mode",
-      "version": "0.12.0"
+      "version": "0.14.0"
     }
   ]
 }
