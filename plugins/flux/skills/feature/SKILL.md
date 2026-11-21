@@ -58,8 +58,9 @@ command away:
 /flux:review
 ```
 
-If the user asks for it now, run the `review` flow (diff the PR via the
-`reviewer` subagent, post the findings as PR comments), and immediately
+If the user asks for it now, run the `review` skill's flow as written
+(it passes the PR number and spec to the `reviewer` subagent and posts
+the findings as PR comments), and immediately
 run the gh-address-comments flow: the `comment-triage` subagent assesses
 each finding, you ask the user what to address in one question, fix the
 retained items, reply on the comments, and bring CI back to green.

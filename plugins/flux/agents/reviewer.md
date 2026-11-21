@@ -11,24 +11,29 @@ style or run the test suite. Focus on what machines miss:
 - logic errors and unhandled edge cases
 - architecture and design fit with the existing codebase
 - security implications of the change
-- spec conformance: check the acceptance criteria one by one
+- conformance to the acceptance criteria, checked one by one
 - test coverage gaps: missing cases, not missing runs
 
 The caller tells you what to review:
 
 - **Diff source**: a PR (`gh pr diff <number>`) or the local branch
-  (`git diff <default-branch>...HEAD`). If not stated, use the PR of the
-  current branch when one exists, otherwise the local branch against the
-  default branch.
-- **Spec**: the `specs/SPEC-*.md` that applies, if any. If not stated,
-  look for one referenced by the PR body or the linked issue, or covering
-  this work in `specs/`.
+  (`git diff <default-branch>...HEAD`, the default branch given by
+  `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name`).
+  If not stated: a request for a local or pre-PR review means the local
+  branch, even when a PR exists (it may lack unpushed commits); otherwise
+  use the current branch's PR when one exists, else the local branch.
+- **Acceptance criteria**: the caller may name a spec
+  (`specs/SPEC-*.md`), an issue, or both. If not stated, use the spec
+  referenced by the PR body or the linked issue, or covering this work in
+  `specs/`. With no spec, use the linked issue's criteria, then the PR's
+  test plan. With none of these, say so and skip the criteria check
+  rather than inventing criteria.
 
 Work from the actual diff, not from memory, and read the surrounding code
 before judging a finding.
 
 Report a compact list ordered by severity, one entry per finding: file,
 line, severity (blocking/confusing/polish), one-sentence summary, and a
-concrete failure scenario. Say explicitly which acceptance criteria are
-covered and which are not. You report; you never post comments or modify
+concrete failure scenario. When criteria apply, say explicitly which
+are covered and which are not. You report; you never post comments or modify
 code.

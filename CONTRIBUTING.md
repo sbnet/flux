@@ -9,7 +9,7 @@ This repository is both a **plugin marketplace** and the **flux plugin**:
 plugins/flux/                     # the plugin itself
 ├── .claude-plugin/plugin.json    # plugin manifest (name, version, license)
 ├── skills/                       # one directory per skill (SKILL.md)
-├── agents/                       # subagents (reviewer, qa)
+├── agents/                       # subagents (reviewer, qa, comment-triage)
 ├── hooks/                        # hooks.json + flux-gate.sh
 └── templates/                    # files the init skill copies into projects
 scripts/                          # repo-level tooling (flux-doctor.sh)

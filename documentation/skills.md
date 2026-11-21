@@ -220,10 +220,11 @@ scenario) either way.
 
 - **PR review**: launched by `/flux:review` (and duke), whose findings get
   posted as PR comments.
-- **Local pre-PR review**: **conditional by design**: run it when a
+- **Local pre-PR review**, **conditional by design**. Run it when a
   post-PR finding would be expensive: diff spanning many files/layers,
   schema or data migration, sensitive area (auth, payments, permissions,
-  files), spec with many criteria. Skip it for small contained changes: the PR review (`/flux:review`) covers those.
+  files), spec with many criteria. Skip it for small contained changes,
+  which the PR review (`/flux:review`) covers.
   Rationale and a worked example: [walkthrough](walkthrough.md), part 2
   step 5.
 
